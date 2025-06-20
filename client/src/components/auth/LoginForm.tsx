@@ -117,7 +117,7 @@ export function LoginForm() {
                 Email address
               </label>
               <div className="relative">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
                   <Mail className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
@@ -126,10 +126,11 @@ export function LoginForm() {
                   type="email"
                   autoComplete="email"
                   required
-                  className={`input-field pl-12 ${errors.email ? 'input-error' : ''}`}
-                  placeholder="Enter your email"ṇ
+                  className={`input-field pl-11 ${errors.email ? 'input-error' : ''}`}
+                  placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleChange}
+                  style={{ paddingLeft: '2.75rem' }}
                 />
               </div>
               {errors.email && (
@@ -152,17 +153,18 @@ export function LoginForm() {
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
                   required
-                  className={`input-field pl-12 pr-12 ${errors.password ? 'input-error' : ''}`}
+                  className={`input-field pl-11 pr-12 ${errors.password ? 'input-error' : ''}`}
                   placeholder="Enter your password"
                   value={formData.password}
                   onChange={handleChange}
+                  style={{ paddingLeft: '2.75rem' }}
                 />
                 <button
                   type="button"
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? (
+                  {showPassword ? ( 
                     <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
                   ) : (
                     <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
