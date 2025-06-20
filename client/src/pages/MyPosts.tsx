@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useState, useEffect } from 'react';
+// import { Link } from 'react-router-dom';
+// import { useAuth } from '../contexts/AuthContext';
 import { postService } from '../services/postService';
 import { 
   FileText, 
@@ -15,7 +15,7 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorMessage } from '../components/common/ErrorMessage';
 import { CreatePostModal } from '../components/CreatePostModal';
 import { EditPostModal } from '../components/EditPostModal';
-import { useGlobalPosts } from '../hooks/useGlobalPosts';
+// import { useGlobalPosts } from '../hooks/useGlobalPosts';
 import type { Post } from '../types';
 
 interface PostRowProps {
@@ -111,7 +111,7 @@ function PostRow({ post, onPostUpdated, onEditPost }: PostRowProps) {
 }
 
 export function MyPosts() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -119,7 +119,8 @@ export function MyPosts() {
   const [isEditPostModalOpen, setIsEditPostModalOpen] = useState(false);
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
 
-  const { refreshMyPosts } = useGlobalPosts();
+  // Global posts hook available if needed
+  // const { refreshMyPosts } = useGlobalPosts();
 
   useEffect(() => {
     fetchPosts();

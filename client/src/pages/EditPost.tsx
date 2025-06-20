@@ -60,7 +60,7 @@ export function EditPost() {
         content: post.content,
         excerpt: post.excerpt || '',
         tags: post.postTags.map((pt: any) => pt.tag.id),
-        status: post.status,
+        status: post.status as "DRAFT" | "PUBLISHED",
       });
     } catch (error: any) {
       setMessage(error.response?.data?.message || 'Failed to load post');

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+// import { useAuth } from '../contexts/AuthContext';
 import { commentService } from '../services/commentService';
 import { 
   MessageCircle, 
@@ -146,7 +146,7 @@ function CommentRow({ comment, onCommentUpdated }: CommentRowProps) {
 }
 
 export function MyComments() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -161,7 +161,7 @@ export function MyComments() {
       setError(null);
       
       const response = await commentService.getUserComments();
-      setComments(response.data.data || response.data.comments || []);
+      setComments(response.data.data || []);
     } catch (error: any) {
       setError(error.response?.data?.message || 'Failed to fetch comments');
     } finally {

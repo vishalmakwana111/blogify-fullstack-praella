@@ -43,6 +43,7 @@ export interface PostsResponse {
       hasPrevPage: boolean;
     };
   };
+  message?: string;
 }
 
 export interface PostResponse {
@@ -50,4 +51,27 @@ export interface PostResponse {
   data: {
     post: Post;
   };
+  message?: string;
+}
+
+export interface Comment {
+  id: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  postId: string;
+  parentId?: string;
+  status?: string;
+  author: {
+    id: string;
+    username: string;
+    firstName?: string;
+    lastName?: string;
+    avatar?: string;
+  };
+  post?: {
+    id: string;
+    title: string;
+  };
+  replies?: Comment[];
 } 

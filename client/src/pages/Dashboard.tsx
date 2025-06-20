@@ -11,14 +11,13 @@ import {
   User,
   Calendar,
   Edit,
-  Trash2,
-  ArrowRight
+  Trash2
 } from 'lucide-react';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorMessage } from '../components/common/ErrorMessage';
 import { CreatePostModal } from '../components/CreatePostModal';
 import { EditPostModal } from '../components/EditPostModal';
-import { useGlobalPosts } from '../hooks/useGlobalPosts';
+// import { useGlobalPosts } from '../hooks/useGlobalPosts';
 import type { Post } from '../types';
 
 interface UserStats {
@@ -156,7 +155,7 @@ export function Dashboard() {
   const [isEditPostModalOpen, setIsEditPostModalOpen] = useState(false);
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
 
-  const { refreshMyPosts } = useGlobalPosts();
+  // const { refreshMyPosts } = useGlobalPosts();
 
   useEffect(() => {
     fetchDashboardData();

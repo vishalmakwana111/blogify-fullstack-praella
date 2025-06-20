@@ -7,7 +7,7 @@ interface AISummaryProps {
   postTitle: string;
 }
 
-const AISummary: React.FC<AISummaryProps> = ({ postId, postTitle }) => {
+const AISummary: React.FC<AISummaryProps> = ({ postId }) => {
   const [summary, setSummary] = useState<string>('');
   const [wordCount, setWordCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);

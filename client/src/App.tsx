@@ -1,6 +1,4 @@
 // Clean App.tsx for testing Tailwind CSS v4+
-
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';

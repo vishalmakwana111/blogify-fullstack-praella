@@ -9,7 +9,7 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorMessage } from '../components/common/ErrorMessage';
 import { Header } from '../components/common/Header';
 import { EditPostModal } from '../components/EditPostModal';
-import { useGlobalPosts } from '../hooks/useGlobalPosts';
+// import { useGlobalPosts } from '../hooks/useGlobalPosts';
 
 export function Home() {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ export function Home() {
   const [isEditPostModalOpen, setIsEditPostModalOpen] = useState(false);
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
 
-  const { posts: globalPosts, refreshPosts } = useGlobalPosts();
+  // const { refreshPosts } = useGlobalPosts();
 
 
   useEffect(() => {

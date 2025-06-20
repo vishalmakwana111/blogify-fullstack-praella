@@ -124,10 +124,10 @@ export function CreatePost() {
 
       const response = await postService.createPost(submitData);
 
-      if (response.data.success) {
+      if (response.success) {
         navigate('/');
       } else {
-        setMessage(response.data.message || 'Failed to create post');
+        setMessage(response.message || 'Failed to create post');
       }
     } catch (error: any) {
       setMessage(error.response?.data?.message || 'Failed to create post');

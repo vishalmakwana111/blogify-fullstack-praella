@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { MessageCircle, Send, X } from 'lucide-react';
@@ -13,7 +13,7 @@ interface AddCommentFormProps {
 }
 
 export function AddCommentForm({ 
-  postId, 
+  postId: _, // postId is handled by parent component
   parentId, 
   onSubmit, 
   onCancel, 

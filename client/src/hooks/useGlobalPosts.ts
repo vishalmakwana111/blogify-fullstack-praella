@@ -78,12 +78,10 @@ export function useGlobalPosts() {
       const myPosts = response.data.data;
       
       // Update only the posts that belong to the current user in global state
-      setPosts(prevPosts => {
-        const otherUserPosts = prevPosts.filter(post => 
-          !myPosts.some(myPost => myPost.id === post.id)
-        );
-        return [...myPosts, ...otherUserPosts];
-      });
+      const otherUserPosts = posts.filter((post: Post) => 
+        !myPosts.some((myPost: Post) => myPost.id === post.id)
+      );
+      setPosts([...myPosts, ...otherUserPosts]);
       
       return myPosts;
     } catch (error: any) {

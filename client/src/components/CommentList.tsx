@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { MessageCircle, Reply, Edit, Trash2, User, Check, X, Heart, MoreHorizontal } from 'lucide-react';
+import { MessageCircle, Reply, Edit, Trash2, Check, X, Heart, MoreHorizontal } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import type { Comment } from '../services/commentService';
 
