@@ -31,86 +31,123 @@ export function Header() {
   }, [isMenuOpen]);
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
+    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">B</span>
+          {/* Logo - Left Side */}
+          <div className="flex items-center flex-shrink-0">
+            <Link to="/" className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-xl">B</span>
               </div>
-              <span className="font-display text-xl font-bold text-gray-900">
-                Blogify
-              </span>
+              <div className="flex flex-col">
+                <span className="font-display text-2xl font-bold text-gray-900 leading-tight">
+                  Blogify
+                </span>
+                <span className="text-xs text-gray-500 font-medium -mt-1">
+                  Your Story Matters
+                </span>
+              </div>
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          {/* Right Side Navigation */}
+          <div className="flex items-center space-x-4">
             {isAuthenticated ? (
               <>
                 {/* Create Post Button */}
                 <Link
                   to="/posts/create"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 transition-colors"
+                  className="hidden md:inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   <PlusCircle className="w-4 h-4 mr-2" />
                   Create Post
                 </Link>
 
-                {/* User Menu */}
+                {/* User Profile Menu */}
                 <div className="relative" ref={dropdownRef}>
                   <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors"
+                    className="flex items-center space-x-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-gray-50"
                   >
-                    <User className="w-4 h-4" />
-                    <span>
-                      {user?.firstName && user?.lastName 
-                        ? `${user.firstName} ${user.lastName}`
-                        : user?.username || 'User'
-                      }
-                    </span>
+                    <div className="w-8 h-8 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full flex items-center justify-center">
+                      {user?.avatar ? (
+                        <img
+                          src={user.avatar}
+                          alt="Profile"
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <User className="w-4 h-4 text-white" />
+                      )}
+                    </div>
+                    <div className="hidden md:block text-left">
+                      <div className="text-sm font-medium text-gray-900">
+                        {user?.firstName && user?.lastName 
+                          ? `${user.firstName} ${user.lastName}`
+                          : user?.username || 'User'
+                        }
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        @{user?.username}
+                      </div>
+                    </div>
                   </button>
                   
                   {isMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                      <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
-                        <div className="font-medium">
-                          {user?.firstName && user?.lastName 
-                            ? `${user.firstName} ${user.lastName}`
-                            : user?.username || 'User'
-                          }
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                      <div className="px-4 py-3 border-b border-gray-100">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full flex items-center justify-center">
+                            {user?.avatar ? (
+                              <img
+                                src={user.avatar}
+                                alt="Profile"
+                                className="w-10 h-10 rounded-full object-cover"
+                              />
+                            ) : (
+                              <User className="w-5 h-5 text-white" />
+                            )}
+                          </div>
+                          <div>
+                            <div className="font-medium text-gray-900">
+                              {user?.firstName && user?.lastName 
+                                ? `${user.firstName} ${user.lastName}`
+                                : user?.username || 'User'
+                              }
+                            </div>
+                            <div className="text-sm text-gray-500">@{user?.username}</div>
+                          </div>
                         </div>
-                        <div className="text-gray-500">@{user?.username}</div>
                       </div>
                       
                       <Link
                         to="/dashboard"
-                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <LayoutDashboard className="w-4 h-4 mr-2" />
+                        <LayoutDashboard className="w-4 h-4 mr-3" />
                         Dashboard
                       </Link>
                       
                       <Link
                         to="/dashboard/profile"
-                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <User className="w-4 h-4 mr-2" />
+                        <User className="w-4 h-4 mr-3" />
                         Profile Settings
                       </Link>
                       
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                      >
-                        <LogOut className="w-4 h-4 mr-2" />
-                        Sign out
-                      </button>
+                      <div className="border-t border-gray-100 mt-1 pt-1">
+                        <button
+                          onClick={handleLogout}
+                          className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          <LogOut className="w-4 h-4 mr-3" />
+                          Sign out
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -120,32 +157,30 @@ export function Header() {
                 {/* Guest Navigation */}
                 <Link
                   to="/login"
-                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors"
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors rounded-lg hover:bg-gray-50"
                 >
                   <LogIn className="w-4 h-4 mr-2" />
                   Sign in
                 </Link>
                 <Link
                   to="/register"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 transition-colors"
+                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   <UserPlus className="w-4 h-4 mr-2" />
                   Sign up
                 </Link>
               </>
             )}
-          </nav>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
+            {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors"
+              className="md:hidden inline-flex items-center justify-center p-2 rounded-lg text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors"
             >
               {isMenuOpen ? (
-                <X className="block h-6 w-6" />
+                <X className="block h-5 w-5" />
               ) : (
-                <Menu className="block h-6 w-6" />
+                <Menu className="block h-5 w-5" />
               )}
             </button>
           </div>
@@ -153,44 +188,68 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
+          <div className="md:hidden border-t border-gray-200">
+            <div className="px-2 pt-2 pb-3 space-y-1 bg-gray-50">
               {isAuthenticated ? (
                 <>
                   {/* Mobile Create Post Button */}
                   <Link
                     to="/posts/create"
-                    className="flex items-center text-gray-700 hover:text-primary-600 block px-3 py-2 text-base font-medium transition-colors"
+                    className="flex items-center text-gray-700 hover:text-blue-600 hover:bg-white px-3 py-2 rounded-lg text-base font-medium transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <PlusCircle className="w-4 h-4 mr-2" />
+                    <PlusCircle className="w-5 h-5 mr-3" />
                     Create Post
                   </Link>
 
-                  <div className="px-3 py-2 border-b border-gray-200">
-                    <div className="text-base font-medium text-gray-800">
-                      {user?.firstName && user?.lastName 
-                        ? `${user.firstName} ${user.lastName}`
-                        : user?.username || 'User'
-                      }
+                  <div className="px-3 py-3 bg-white rounded-lg mx-1 my-2">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full flex items-center justify-center">
+                        {user?.avatar ? (
+                          <img
+                            src={user.avatar}
+                            alt="Profile"
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
+                        ) : (
+                          <User className="w-5 h-5 text-white" />
+                        )}
+                      </div>
+                      <div>
+                        <div className="text-base font-medium text-gray-900">
+                          {user?.firstName && user?.lastName 
+                            ? `${user.firstName} ${user.lastName}`
+                            : user?.username || 'User'
+                          }
+                        </div>
+                        <div className="text-sm text-gray-500">@{user?.username}</div>
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-500">@{user?.username}</div>
                   </div>
                   
                   <Link
-                    to="/dashboard/profile"
-                    className="flex items-center w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 transition-colors"
+                    to="/dashboard"
+                    className="flex items-center text-gray-700 hover:text-blue-600 hover:bg-white px-3 py-2 rounded-lg text-base font-medium transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <User className="w-4 h-4 mr-2" />
+                    <LayoutDashboard className="w-5 h-5 mr-3" />
+                    Dashboard
+                  </Link>
+                  
+                  <Link
+                    to="/dashboard/profile"
+                    className="flex items-center text-gray-700 hover:text-blue-600 hover:bg-white px-3 py-2 rounded-lg text-base font-medium transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <User className="w-5 h-5 mr-3" />
                     Profile Settings
                   </Link>
                   
                   <button
                     onClick={handleLogout}
-                    className="flex items-center w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 transition-colors"
+                    className="flex items-center w-full text-left text-red-600 hover:bg-red-50 px-3 py-2 rounded-lg text-base font-medium transition-colors"
                   >
-                    <LogOut className="w-4 h-4 mr-2" />
+                    <LogOut className="w-5 h-5 mr-3" />
                     Sign out
                   </button>
                 </>
@@ -198,18 +257,18 @@ export function Header() {
                 <>
                   <Link
                     to="/login"
-                    className="flex items-center text-gray-700 hover:text-primary-600 block px-3 py-2 text-base font-medium transition-colors"
+                    className="flex items-center text-gray-700 hover:text-blue-600 hover:bg-white px-3 py-2 rounded-lg text-base font-medium transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <LogIn className="w-4 h-4 mr-2" />
+                    <LogIn className="w-5 h-5 mr-3" />
                     Sign in
                   </Link>
                   <Link
                     to="/register"
-                    className="flex items-center text-gray-700 hover:text-primary-600 block px-3 py-2 text-base font-medium transition-colors"
+                    className="flex items-center text-gray-700 hover:text-blue-600 hover:bg-white px-3 py-2 rounded-lg text-base font-medium transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <UserPlus className="w-4 h-4 mr-2" />
+                    <UserPlus className="w-5 h-5 mr-3" />
                     Sign up
                   </Link>
                 </>
@@ -222,7 +281,7 @@ export function Header() {
       {/* Overlay for mobile menu */}
       {isMenuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black bg-opacity-25 md:hidden"
+          className="fixed inset-0 z-30 bg-black bg-opacity-25 md:hidden"
           onClick={() => setIsMenuOpen(false)}
         />
       )}

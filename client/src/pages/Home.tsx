@@ -92,10 +92,6 @@ export function Home() {
         
         <div className="relative max-w-6xl mx-auto px-4 py-20">
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-sm rounded-full mb-8">
-              <span className="text-3xl font-bold text-white">B</span>
-            </div>
-            
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
               Welcome to{' '}
               <span className="bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">
@@ -130,34 +126,38 @@ export function Home() {
 
       <div className="max-w-6xl mx-auto px-4 py-16">
         {/* Section Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-2xl mb-6">
+            <MessageCircle className="w-8 h-8 text-blue-600" />
+          </div>
+          <h2 className="text-4xl font-bold text-gray-900 mb-6">
             Latest Stories
           </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Explore our curated collection of thought-provoking articles and stories from our community.
+          <p className="text-gray-600 text-xl max-w-3xl mx-auto leading-relaxed">
+            Explore our curated collection of thought-provoking articles and stories from our vibrant community of writers and creators.
           </p>
+          <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full mx-auto mt-8"></div>
         </div>
 
         {/* Posts List */}
         {posts.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <MessageCircle className="w-12 h-12 text-gray-400" />
+          <div className="text-center py-20">
+            <div className="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl flex items-center justify-center mx-auto mb-8">
+              <MessageCircle className="w-16 h-16 text-gray-400" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              No posts available yet
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              No stories available yet
             </h3>
-            <p className="text-gray-600 mb-6">
-              Be the first to share your story with our community!
+            <p className="text-gray-600 text-lg mb-8 max-w-md mx-auto">
+              Be the first to share your story and inspire our community!
             </p>
-            <button className="btn-primary">
-              Create Your First Post
+            <button className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+              Create Your First Story
             </button>
           </div>
         ) : (
           <>
-            <div className="grid gap-8 lg:gap-12">
+            <div className="grid gap-12">
               {posts.map((post) => (
                 <PostCard 
                   key={post.id} 
@@ -170,7 +170,7 @@ export function Home() {
 
             {/* Pagination */}
             {pagination.totalPages > 1 && (
-              <div className="mt-16">
+              <div className="mt-20">
                 <Pagination
                   currentPage={pagination.currentPage}
                   totalPages={pagination.totalPages}
@@ -183,15 +183,29 @@ export function Home() {
           </>
         )}
 
-        {/* Stats */}
-        <div className="mt-12 text-center">
-          <div className="inline-flex items-center px-4 py-2 bg-white rounded-full shadow-sm border">
-            <span className="text-sm text-gray-600">
-              Showing {posts.length} of {pagination.totalItems} posts
+        {/* Enhanced Stats */}
+        <div className="mt-16 text-center">
+          <div className="inline-flex items-center px-6 py-3 bg-white rounded-2xl shadow-sm border border-gray-200">
+            <div className="flex items-center space-x-6 text-sm">
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="text-gray-600 font-medium">
+                  {posts.length} stories this page
+                </span>
+              </div>
+              <div className="w-px h-4 bg-gray-300"></div>
+              <span className="text-gray-600">
+                {pagination.totalItems} total stories
+              </span>
               {pagination.totalPages > 1 && (
-                <> • Page {pagination.currentPage} of {pagination.totalPages}</>
+                <>
+                  <div className="w-px h-4 bg-gray-300"></div>
+                  <span className="text-gray-600">
+                    Page {pagination.currentPage} of {pagination.totalPages}
+                  </span>
+                </>
               )}
-            </span>
+            </div>
           </div>
         </div>
       </div>

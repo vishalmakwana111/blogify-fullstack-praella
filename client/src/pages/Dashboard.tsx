@@ -181,7 +181,7 @@ export function Dashboard() {
   }
 
   return (
-    <div className="p-4 h-screen overflow-hidden flex flex-col">
+    <div className="p-4 h-full flex flex-col">
       {/* Header */}
       <div className="mb-4 flex-shrink-0">
         <h1 className="text-2xl font-display font-bold text-gray-900">
@@ -258,9 +258,9 @@ export function Dashboard() {
         />
       </div>
 
-      {/* Recent Posts */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex-1 min-h-0">
-        <div className="p-3 border-b border-gray-200">
+      {/* Recent Posts - Fixed Height Container */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex-1 min-h-0 flex flex-col">
+        <div className="p-3 border-b border-gray-200 flex-shrink-0">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-gray-900">Recent Posts</h2>
             <Link
@@ -271,28 +271,30 @@ export function Dashboard() {
             </Link>
           </div>
         </div>
-        <div className="divide-y divide-gray-200 overflow-y-auto" style={{ height: 'calc(100% - 60px)' }}>
-          {recentPosts.length === 0 ? (
-            <div className="p-4 text-center">
-              <FileText className="w-10 h-10 text-gray-400 mx-auto mb-3" />
-              <h3 className="text-base font-medium text-gray-900 mb-2">No posts yet</h3>
-              <p className="text-gray-600 mb-3 text-sm">Create your first post to get started!</p>
-              <Link
-                to="/posts/create"
-                className="btn-primary text-sm"
-              >
-                Create Post
-              </Link>
-            </div>
-          ) : (
-            recentPosts.map((post) => (
-              <PostRow 
-                key={post.id} 
-                post={post} 
-                onPostUpdated={fetchDashboardData}
-              />
-            ))
-          )}
+        <div className="flex-1 overflow-y-auto">
+          <div className="divide-y divide-gray-200">
+            {recentPosts.length === 0 ? (
+              <div className="p-4 text-center">
+                <FileText className="w-10 h-10 text-gray-400 mx-auto mb-3" />
+                <h3 className="text-base font-medium text-gray-900 mb-2">No posts yet</h3>
+                <p className="text-gray-600 mb-3 text-sm">Create your first post to get started!</p>
+                <Link
+                  to="/posts/create"
+                  className="btn-primary text-sm"
+                >
+                  Create Post
+                </Link>
+              </div>
+            ) : (
+              recentPosts.map((post) => (
+                <PostRow 
+                  key={post.id} 
+                  post={post} 
+                  onPostUpdated={fetchDashboardData}
+                />
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -82,12 +82,11 @@ export function Sidebar({ isCollapsed, onToggle, isMobileOpen, onMobileClose, on
 
       {/* Sidebar */}
       <aside className={`
-        fixed top-16 left-0 z-50 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 shadow-sm
-        transform transition-transform duration-300 ease-in-out
-        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0 lg:static lg:z-auto lg:h-[calc(100vh-4rem)] lg:top-0
+        bg-white border-r border-gray-200 shadow-sm flex flex-col h-full
+        ${isMobileOpen ? 'fixed inset-y-0 left-0 z-50 translate-x-0 w-64' : 'fixed inset-y-0 left-0 z-50 -translate-x-full w-64'}
+        lg:relative lg:translate-x-0 lg:z-auto
         ${isCollapsed ? 'lg:w-16' : 'lg:w-64'}
-        w-64
+        transition-all duration-300 ease-in-out
       `}>
         {/* Sidebar Header */}
         <div className="flex items-center justify-between p-3 border-b border-gray-200 bg-white">
@@ -118,7 +117,7 @@ export function Sidebar({ isCollapsed, onToggle, isMobileOpen, onMobileClose, on
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
+        <nav className={`flex-1 p-2 space-y-1 ${isCollapsed ? 'overflow-hidden' : 'overflow-y-auto'}`}>
           {navigationItems.map((item) => {
             const Icon = item.icon;
             const isActive = isActiveRoute(item.path);

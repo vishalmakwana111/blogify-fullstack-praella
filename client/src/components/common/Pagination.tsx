@@ -1,5 +1,3 @@
-
-
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface PaginationProps {
@@ -52,63 +50,65 @@ export function Pagination({
   if (totalPages <= 1) return null;
 
   return (
-    <nav className="flex items-center justify-center gap-1" aria-label="Pagination">
-      {/* Previous Button */}
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={!hasPrev}
-        className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        aria-label="Previous page"
-      >
-        <ChevronLeft className="w-4 h-4" />
-        Previous
-      </button>
+    <nav className="flex items-center justify-center" aria-label="Pagination">
+      <div className="flex items-center gap-2 bg-white rounded-2xl shadow-lg border border-gray-200 p-2">
+        {/* Previous Button */}
+        <button
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={!hasPrev}
+          className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-600 bg-gray-50 border border-gray-200 rounded-xl hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-50 disabled:hover:text-gray-600 disabled:hover:border-gray-200 transition-all duration-200"
+          aria-label="Previous page"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          <span className="hidden sm:inline">Previous</span>
+        </button>
 
-      {/* Page Numbers */}
-      <div className="flex">
-        {getPageNumbers().map((page, index) => {
-          if (page === '...') {
+        {/* Page Numbers */}
+        <div className="flex items-center gap-1">
+          {getPageNumbers().map((page, index) => {
+            if (page === '...') {
+              return (
+                <span
+                  key={`ellipsis-${index}`}
+                  className="px-3 py-2.5 text-sm font-medium text-gray-400 select-none"
+                >
+                  ···
+                </span>
+              );
+            }
+
+            const pageNumber = page as number;
+            const isActive = pageNumber === currentPage;
+
             return (
-              <span
-                key={`ellipsis-${index}`}
-                className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border-t border-b border-gray-300"
+              <button
+                key={pageNumber}
+                onClick={() => onPageChange(pageNumber)}
+                className={`min-w-[44px] px-3 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 transform hover:scale-105 ${
+                  isActive
+                    ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-500/25 scale-105'
+                    : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600 active:scale-95'
+                }`}
+                aria-current={isActive ? 'page' : undefined}
+                aria-label={`Page ${pageNumber}`}
               >
-                ...
-              </span>
+                {pageNumber}
+              </button>
             );
-          }
+          })}
+        </div>
 
-          const pageNumber = page as number;
-          const isActive = pageNumber === currentPage;
-
-          return (
-            <button
-              key={pageNumber}
-              onClick={() => onPageChange(pageNumber)}
-              className={`px-3 py-2 text-sm font-medium border-t border-b border-gray-300 transition-colors ${
-                isActive
-                  ? 'bg-blue-500 text-white border-blue-500'
-                  : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-              }`}
-              aria-current={isActive ? 'page' : undefined}
-              aria-label={`Page ${pageNumber}`}
-            >
-              {pageNumber}
-            </button>
-          );
-        })}
+        {/* Next Button */}
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={!hasNext}
+          className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-600 bg-gray-50 border border-gray-200 rounded-xl hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-50 disabled:hover:text-gray-600 disabled:hover:border-gray-200 transition-all duration-200"
+          aria-label="Next page"
+        >
+          <span className="hidden sm:inline">Next</span>
+          <ChevronRight className="w-4 h-4" />
+        </button>
       </div>
-
-      {/* Next Button */}
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={!hasNext}
-        className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        aria-label="Next page"
-      >
-        Next
-        <ChevronRight className="w-4 h-4" />
-      </button>
     </nav>
   );
 } 

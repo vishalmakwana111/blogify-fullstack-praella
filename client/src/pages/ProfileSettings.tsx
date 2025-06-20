@@ -98,20 +98,20 @@ export function ProfileSettings() {
   }
 
   return (
-    <div className="p-4 h-screen overflow-hidden flex flex-col">
+    <div className="p-4 h-full flex flex-col">
       <div className="max-w-2xl mx-auto w-full flex-1 min-h-0 flex flex-col">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 transition-all duration-300 ease-in-out hover:shadow-md flex-1 min-h-0 flex flex-col">
-          <div className="p-4 border-b border-gray-200 flex-shrink-0">
-            <h1 className="text-2xl font-display font-bold">Profile Settings</h1>
-            <p className="text-gray-600 mt-1">Update your profile information and preferences</p>
+          <div className="p-3 border-b border-gray-200 flex-shrink-0">
+            <h1 className="text-xl font-display font-bold">Profile Settings</h1>
+            <p className="text-gray-600 text-sm">Update your profile information and preferences</p>
           </div>
 
-          <div className="flex-1 overflow-y-auto">
-            <form onSubmit={handleSubmit} className="p-4 space-y-4">
+          <div className="flex-1 p-3">
+            <form onSubmit={handleSubmit} className="space-y-3 h-full flex flex-col">
               {/* Avatar Upload */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <div className="relative">
-                  <div className="w-20 h-20 rounded-full bg-gray-200 overflow-hidden border-4 border-white shadow-lg">
+                  <div className="w-16 h-16 rounded-full bg-gray-200 overflow-hidden border-2 border-white shadow-md">
                     {previewUrl ? (
                       <img
                         src={previewUrl}
@@ -120,12 +120,12 @@ export function ProfileSettings() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-400">
-                        <User className="w-6 h-6" />
+                        <User className="w-5 h-5" />
                       </div>
                     )}
                   </div>
-                  <label className="absolute -bottom-1 -right-1 bg-blue-500 text-white p-1.5 rounded-full cursor-pointer hover:bg-blue-600 transition-colors shadow-lg">
-                    <Camera className="w-3 h-3" />
+                  <label className="absolute -bottom-0.5 -right-0.5 bg-blue-500 text-white p-1 rounded-full cursor-pointer hover:bg-blue-600 transition-colors shadow-md">
+                    <Camera className="w-2.5 h-2.5" />
                     <input
                       type="file"
                       accept="image/*"
@@ -136,21 +136,21 @@ export function ProfileSettings() {
                 </div>
                 <div>
                   <h3 className="font-medium text-gray-900 text-sm">Profile Photo</h3>
-                  <p className="text-xs text-gray-600 mt-1">
-                    Upload a photo to personalize your profile. Max size: 5MB
+                  <p className="text-xs text-gray-500">
+                    Upload a photo. Max size: 5MB
                   </p>
                   {avatar && (
-                    <p className="text-xs text-green-600 mt-1">
-                      New image selected: {avatar.name}
+                    <p className="text-xs text-green-600">
+                      New: {avatar.name}
                     </p>
                   )}
                 </div>
               </div>
 
               {/* Form Fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     First Name
                   </label>
                   <input
@@ -158,13 +158,13 @@ export function ProfileSettings() {
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter your first name"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter first name"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Last Name
                   </label>
                   <input
@@ -172,15 +172,15 @@ export function ProfileSettings() {
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter your last name"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter last name"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Username
                 </label>
                 <input
@@ -188,44 +188,44 @@ export function ProfileSettings() {
                   name="username"
                   value={formData.username}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Choose a unique username"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Choose username"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Email Address
                 </label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-gray-50 text-gray-500"
                   disabled
                   title="Email cannot be changed"
                 />
-                <p className="text-xs text-gray-500 mt-1">Email address cannot be changed</p>
+                <p className="text-xs text-gray-500">Email cannot be changed</p>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Bio
                 </label>
                 <textarea
                   name="bio"
                   value={formData.bio}
                   onChange={handleInputChange}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 resize-none"
+                  rows={2}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 resize-none"
                   placeholder="Tell us about yourself..."
                 />
               </div>
 
               {/* Message */}
               {message && (
-                <div className={`p-3 rounded-md ${
+                <div className={`p-2 rounded-md text-sm ${
                   messageType === 'success' 
                     ? 'bg-green-50 border border-green-200 text-green-800' 
                     : 'bg-red-50 border border-red-200 text-red-800'
@@ -235,11 +235,11 @@ export function ProfileSettings() {
               )}
 
               {/* Submit Button */}
-              <div className="pt-4">
+              <div className="pt-2 flex-shrink-0">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 ease-in-out hover:shadow-md transform hover:-translate-y-0.5 disabled:transform-none font-medium"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 ease-in-out hover:shadow-md transform hover:-translate-y-0.5 disabled:transform-none font-medium"
                 >
                   {loading ? (
                     <>

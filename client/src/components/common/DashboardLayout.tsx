@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Menu } from 'lucide-react';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 
@@ -46,11 +45,11 @@ export function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Fixed Header - Always visible */}
+    <div className="h-screen bg-gray-50 flex flex-col">
+      {/* Fixed Header */}
       <Header />
       
-      <div className="flex">
+      <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <Sidebar
           isCollapsed={isSidebarCollapsed}
@@ -60,11 +59,11 @@ export function DashboardLayout() {
           onMobileOpen={handleMobileSidebarOpen}
         />
 
-        {/* Main Content Area - Only this updates */}
+        {/* Main Content Area - Scrollable */}
         <main className={`
           flex-1 transition-all duration-500 ease-in-out
           ${isSidebarCollapsed ? 'lg:ml-8' : 'lg:ml-8'}
-          ml-0 min-h-screen
+          ml-0 overflow-y-auto
         `}>
           <Outlet />
         </main>

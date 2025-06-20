@@ -61,27 +61,28 @@ export function PostCard({ post, onClick, onPostUpdated }: PostCardProps) {
   };
 
   return (
-    <article className="card group cursor-pointer animate-fade-in">
-      <div className="flex flex-col lg:flex-row overflow-hidden">
+    <article className="group cursor-pointer transition-all duration-300 hover:-translate-y-1">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-gray-300 transition-all duration-300">
         {/* Cover Image */}
         {post.coverImage && (
-          <div className="lg:w-80 aspect-video lg:aspect-square bg-gray-100 overflow-hidden">
+          <div className="relative aspect-[16/10] bg-gray-100 overflow-hidden">
             <img
               src={post.coverImage}
               alt={post.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               loading="lazy"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </div>
         )}
 
-        <div className="flex-1 p-8 relative">
+        <div className="p-6 relative">
           {/* Owner Actions */}
           {isOwner && (
-            <div className="absolute top-4 right-4 flex gap-1">
+            <div className="absolute top-4 right-4 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <button
                 onClick={handleEdit}
-                className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                className="p-1.5 bg-white/90 backdrop-blur-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg border border-gray-200 transition-all duration-200 shadow-sm hover:shadow-md"
                 title="Edit post"
               >
                 <Edit className="w-3.5 h-3.5" />
@@ -89,10 +90,10 @@ export function PostCard({ post, onClick, onPostUpdated }: PostCardProps) {
               <button
                 onClick={handleDelete}
                 disabled={isDeleting || post._count.comments > 0}
-                className={`p-1.5 transition-colors rounded-md ${
+                className={`p-1.5 bg-white/90 backdrop-blur-sm rounded-lg border border-gray-200 transition-all duration-200 shadow-sm hover:shadow-md ${
                   post._count.comments > 0 
                     ? 'text-gray-300 cursor-not-allowed' 
-                    : 'text-gray-400 hover:text-red-600 hover:bg-red-50'
+                    : 'text-gray-600 hover:text-red-600 hover:bg-red-50'
                 } ${isDeleting ? 'opacity-50' : ''}`}
                 title={
                   post._count.comments > 0 
@@ -111,67 +112,78 @@ export function PostCard({ post, onClick, onPostUpdated }: PostCardProps) {
 
           {/* Tags */}
           {post.postTags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-6">
+            <div className="flex flex-wrap gap-2 mb-4">
               {post.postTags.slice(0, 3).map(({ tag }) => (
                 <span
                   key={tag.id}
-                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 border border-blue-200"
+                  className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 border border-blue-100 hover:from-blue-100 hover:to-cyan-100 transition-all duration-200"
                 >
                   {tag.name}
                 </span>
               ))}
               {post.postTags.length > 3 && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600 border border-gray-200">
                   +{post.postTags.length - 3} more
                 </span>
               )}
             </div>
           )}
 
-          {/* Title - Required by assessment */}
-          <h2 className="text-2xl font-bold text-gray-900 mb-4 line-clamp-2 group-hover:text-blue-600 transition-colors leading-tight">
+          {/* Title */}
+          <h2 className="text-2xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300 leading-tight">
             {post.title}
           </h2>
 
           {/* Excerpt */}
           {post.excerpt && (
-            <p className="text-gray-600 mb-6 line-clamp-3 leading-relaxed">
+            <p className="text-gray-600 text-base mb-6 line-clamp-2 leading-relaxed">
               {post.excerpt}
             </p>
           )}
 
-          {/* Meta Information - Required by assessment */}
-          <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500 mb-6">
-            {/* Author Name - Required */}
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
-                <User className="w-4 h-4 text-white" />
+          {/* Author & Meta Info */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              {/* Author Avatar */}
+              <div className="relative">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center ring-2 ring-blue-100">
+                  {post.author.avatar ? (
+                    <img
+                      src={post.author.avatar}
+                      alt={authorName}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <User className="w-5 h-5 text-white" />
+                  )}
+                </div>
+                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
               </div>
-              <span className="font-medium text-gray-700">{authorName}</span>
-            </div>
-
-            {/* Date - Required */}
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              <time dateTime={post.publishedAt}>
-                {timeAgo}
-              </time>
-            </div>
-
-            {/* Comment Count - Required */}
-            <div className="flex items-center gap-2">
-              <MessageCircle className="w-4 h-4" />
-              <span>{post._count.comments} comment{post._count.comments !== 1 ? 's' : ''}</span>
+              
+              {/* Author Info */}
+              <div>
+                <div className="font-semibold text-gray-900 text-base">{authorName}</div>
+                <div className="flex items-center space-x-3 text-gray-500 text-sm">
+                  <div className="flex items-center space-x-1">
+                    <Calendar className="w-3.5 h-3.5" />
+                    <time dateTime={post.publishedAt}>{timeAgo}</time>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <MessageCircle className="w-3.5 h-3.5" />
+                    <span>{post._count.comments} comment{post._count.comments !== 1 ? 's' : ''}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Read More Button */}
           <button
             onClick={() => onClick(post.id)}
-            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-cyan-700 transition-all duration-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+            className="w-full inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 group-hover:scale-[1.01]"
           >
             Read Full Story
-            <ChevronRight className="w-4 h-4 ml-2" />
+            <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
           </button>
         </div>
       </div>
