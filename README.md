@@ -6,6 +6,8 @@ A cutting-edge, full-featured blog platform built with React 19, Express 5, and 
 📦 **Repository**: [github.com/vishalmakwana111/blogify-fullstack-praella](https://github.com/vishalmakwana111/blogify-fullstack-praella)  
 🎥 **Video Demo**: [Watch Full Application Walkthrough](https://www.loom.com/share/4f2cae82e9384b0b8b0c0acc18ef3734)
 
+*I would highly recommend running this application locally to experience the full functionality and AI features.*
+
 
 
 
