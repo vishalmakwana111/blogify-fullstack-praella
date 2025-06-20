@@ -3,7 +3,7 @@ import { CommentList } from './CommentList';
 import { AddCommentForm } from './AddCommentForm';
 import { commentService } from '../services/commentService';
 import type { Comment } from '../services/commentService';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Users, Clock, TrendingUp } from 'lucide-react';
 
 interface CommentSectionProps {
   postId: string;
@@ -142,64 +142,132 @@ export function CommentSection({ postId, initialCommentCount = 0 }: CommentSecti
   };
 
   return (
-    <div className="bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Comments Header */}
-        <div className="flex items-center gap-2 mb-6">
-          <MessageCircle className="w-6 h-6 text-gray-600" />
-          <h2 className="text-2xl font-bold text-gray-900">
-            Comments ({commentCount})
-          </h2>
+    <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+      {/* Comments Header */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100 p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
+              <MessageCircle className="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">
+                Discussion
+              </h2>
+              <p className="text-gray-600 text-sm">
+                {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Add Comment Form */}
-        <div className="mb-8">
-          <AddCommentForm
-            postId={postId}
-            onSubmit={handleCreateComment}
-            placeholder="Share your thoughts..."
-          />
+        {/* Comment Stats */}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-white/50">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-blue-100 rounded-md flex items-center justify-center">
+                <Users className="w-3 h-3 text-blue-600" />
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-gray-900">{commentCount}</div>
+                <div className="text-xs text-gray-600">Comments</div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-white/50">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-green-100 rounded-md flex items-center justify-center">
+                <TrendingUp className="w-3 h-3 text-green-600" />
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-gray-900">Active</div>
+                <div className="text-xs text-gray-600">Discussion</div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-white/50">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-purple-100 rounded-md flex items-center justify-center">
+                <Clock className="w-3 h-3 text-purple-600" />
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-gray-900">Recent</div>
+                <div className="text-xs text-gray-600">Activity</div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <div className="text-red-700">{error}</div>
+      {/* Comment Form Section */}
+      <div className="p-4 border-b border-gray-100">
+        <div className="mb-3">
+          <h3 className="font-semibold text-gray-900 mb-1">Share your thoughts</h3>
+          <p className="text-gray-600 text-sm">Your perspective matters. Join the discussion below.</p>
+        </div>
+        <AddCommentForm
+          postId={postId}
+          onSubmit={handleCreateComment}
+          placeholder="What are your thoughts on this article?"
+        />
+      </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="mx-4 mb-4">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+            <div className="text-red-700 text-sm font-medium">{error}</div>
             <button
               onClick={fetchComments}
-              className="mt-2 text-sm text-red-600 hover:text-red-800 underline"
+              className="mt-2 text-sm text-red-600 hover:text-red-800 font-medium underline transition-colors"
             >
               Try again
             </button>
           </div>
-        )}
-
-        {/* Comments List */}
-        <div className="space-y-6">
-          <CommentList
-            comments={comments}
-            onReply={handleReply}
-            onEdit={handleEditComment}
-            onDelete={handleDeleteComment}
-            isLoading={isLoading}
-          />
-
-          {/* Reply Forms */}
-          {replyingTo && (
-            <div className="mt-4">
-              <AddCommentForm
-                postId={postId}
-                parentId={replyingTo}
-                onSubmit={handleCreateComment}
-                onCancel={() => setReplyingTo(null)}
-                placeholder="Write a reply..."
-                isReply={true}
-              />
-            </div>
-          )}
-
-
         </div>
+      )}
+
+      {/* Comments List */}
+      <div className="p-4">
+        {commentCount === 0 && !isLoading && !error ? (
+          <div className="text-center py-8">
+            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <MessageCircle className="w-6 h-6 text-gray-400" />
+            </div>
+            <h3 className="font-medium text-gray-900 mb-1">No comments yet</h3>
+            <p className="text-gray-600 text-sm">Be the first to share your thoughts on this article.</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <CommentList
+              comments={comments}
+              onReply={handleReply}
+              onEdit={handleEditComment}
+              onDelete={handleDeleteComment}
+              isLoading={isLoading}
+            />
+
+            {/* Reply Forms */}
+            {replyingTo && (
+              <div className="mt-4 pl-3 border-l-2 border-blue-200">
+                <div className="mb-3">
+                  <h4 className="text-sm font-medium text-gray-900 mb-1">Reply to comment</h4>
+                  <p className="text-gray-600 text-xs">Your reply will be posted as a response to the comment above.</p>
+                </div>
+                <AddCommentForm
+                  postId={postId}
+                  parentId={replyingTo}
+                  onSubmit={handleCreateComment}
+                  onCancel={() => setReplyingTo(null)}
+                  placeholder="Write your reply..."
+                  isReply={true}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

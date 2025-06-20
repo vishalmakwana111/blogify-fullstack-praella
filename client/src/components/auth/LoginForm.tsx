@@ -117,8 +117,8 @@ export function LoginForm() {
                 Email address
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
-                  <Mail className="h-4 w-4 text-gray-400" />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
                   id="email"
@@ -126,8 +126,7 @@ export function LoginForm() {
                   type="email"
                   autoComplete="email"
                   required
-                  className={`input-field ${errors.email ? 'input-error' : ''}`}
-                  style={{ paddingLeft: '2.75rem' }}
+                  className={`input-field pl-12 ${errors.email ? 'input-error' : ''}`}
                   placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleChange}
@@ -144,8 +143,8 @@ export function LoginForm() {
                 Password
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
-                  <Lock className="h-4 w-4 text-gray-400" />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
                   id="password"
@@ -153,21 +152,20 @@ export function LoginForm() {
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
                   required
-                  className={`input-field ${errors.password ? 'input-error' : ''}`}
-                  style={{ paddingLeft: '2.75rem', paddingRight: '3rem' }}
+                  className={`input-field pl-12 pr-12 ${errors.password ? 'input-error' : ''}`}
                   placeholder="Enter your password"
                   value={formData.password}
                   onChange={handleChange}
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center z-10"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600 transition-colors" />
+                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
                   ) : (
-                    <Eye className="h-4 w-4 text-gray-400 hover:text-gray-600 transition-colors" />
+                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
                   )}
                 </button>
               </div>
