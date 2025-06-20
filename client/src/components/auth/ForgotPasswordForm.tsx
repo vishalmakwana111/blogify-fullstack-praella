@@ -113,8 +113,8 @@ export function ForgotPasswordForm() {
                 Email address
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
+                  <Mail className="h-4 w-4 text-gray-400" />
                 </div>
                 <input
                   id="email"
@@ -122,7 +122,8 @@ export function ForgotPasswordForm() {
                   type="email"
                   autoComplete="email"
                   required
-                  className={`input-field pl-10 ${errors.email ? 'input-error' : ''}`}
+                  className={`input-field ${errors.email ? 'input-error' : ''}`}
+                  style={{ paddingLeft: '2.75rem' }}
                   placeholder="Enter your email address"
                   value={email}
                   onChange={handleChange}

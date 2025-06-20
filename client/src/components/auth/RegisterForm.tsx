@@ -214,8 +214,8 @@ export function RegisterForm() {
                   Email address *
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
+                    <Mail className="h-4 w-4 text-gray-400" />
                   </div>
                   <input
                     id="email"
@@ -223,7 +223,8 @@ export function RegisterForm() {
                     type="email"
                     autoComplete="email"
                     required
-                    className={`input-field pl-14 ${errors.email ? 'input-error' : ''}`}
+                    className={`input-field ${errors.email ? 'input-error' : ''}`}
+                    style={{ paddingLeft: '2.75rem' }}
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleChange}
@@ -240,8 +241,8 @@ export function RegisterForm() {
                   Username *
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
+                    <User className="h-4 w-4 text-gray-400" />
                   </div>
                   <input
                     id="username"
@@ -249,7 +250,8 @@ export function RegisterForm() {
                     type="text"
                     autoComplete="username"
                     required
-                    className={`input-field pl-14 ${errors.username ? 'input-error' : ''}`}
+                    className={`input-field ${errors.username ? 'input-error' : ''}`}
+                    style={{ paddingLeft: '2.75rem' }}
                     placeholder="Choose a username"
                     value={formData.username}
                     onChange={handleChange}
@@ -267,8 +269,8 @@ export function RegisterForm() {
                     First Name *
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <User className="h-5 w-5 text-gray-400" />
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
+                      <User className="h-4 w-4 text-gray-400" />
                     </div>
                     <input
                       id="firstName"
@@ -276,7 +278,8 @@ export function RegisterForm() {
                       type="text"
                       autoComplete="given-name"
                       required
-                      className={`input-field pl-14 ${errors.firstName ? 'input-error' : ''}`}
+                      className={`input-field ${errors.firstName ? 'input-error' : ''}`}
+                      style={{ paddingLeft: '2.75rem' }}
                       placeholder="Enter your first name"
                       value={formData.firstName}
                       onChange={handleChange}
@@ -292,8 +295,8 @@ export function RegisterForm() {
                     Last Name *
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <UserCheck className="h-5 w-5 text-gray-400" />
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
+                      <UserCheck className="h-4 w-4 text-gray-400" />
                     </div>
                     <input
                       id="lastName"
@@ -301,7 +304,8 @@ export function RegisterForm() {
                       type="text"
                       autoComplete="family-name"
                       required
-                      className={`input-field pl-14 ${errors.lastName ? 'input-error' : ''}`}
+                      className={`input-field ${errors.lastName ? 'input-error' : ''}`}
+                      style={{ paddingLeft: '2.75rem' }}
                       placeholder="Enter your last name"
                       value={formData.lastName}
                       onChange={handleChange}
@@ -319,8 +323,8 @@ export function RegisterForm() {
                   Password *
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
+                    <Lock className="h-4 w-4 text-gray-400" />
                   </div>
                   <input
                     id="password"
@@ -328,20 +332,21 @@ export function RegisterForm() {
                     type={showPassword ? 'text' : 'password'}
                     autoComplete="new-password"
                     required
-                    className={`input-field pl-14 pr-10 ${errors.password ? 'input-error' : ''}`}
+                    className={`input-field ${errors.password ? 'input-error' : ''}`}
+                    style={{ paddingLeft: '2.75rem', paddingRight: '3rem' }}
                     placeholder="Create a password"
                     value={formData.password}
                     onChange={handleChange}
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center z-10"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
+                      <EyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600 transition-colors" />
                     ) : (
-                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
+                      <Eye className="h-4 w-4 text-gray-400 hover:text-gray-600 transition-colors" />
                     )}
                   </button>
                 </div>
@@ -356,8 +361,8 @@ export function RegisterForm() {
                   Confirm Password *
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
+                    <Lock className="h-4 w-4 text-gray-400" />
                   </div>
                   <input
                     id="confirmPassword"
@@ -365,20 +370,21 @@ export function RegisterForm() {
                     type={showConfirmPassword ? 'text' : 'password'}
                     autoComplete="new-password"
                     required
-                    className={`input-field pl-14 pr-10 ${errors.confirmPassword ? 'input-error' : ''}`}
+                    className={`input-field ${errors.confirmPassword ? 'input-error' : ''}`}
+                    style={{ paddingLeft: '2.75rem', paddingRight: '3rem' }}
                     placeholder="Confirm your password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center z-10"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     {showConfirmPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
+                      <EyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600 transition-colors" />
                     ) : (
-                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
+                      <Eye className="h-4 w-4 text-gray-400 hover:text-gray-600 transition-colors" />
                     )}
                   </button>
                 </div>
