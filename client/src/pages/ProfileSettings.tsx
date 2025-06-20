@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/userService';
-import { Camera, Save, Loader, User } from 'lucide-react';
+import { Save, Loader } from 'lucide-react';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 
 export function ProfileSettings() {
@@ -13,8 +13,6 @@ export function ProfileSettings() {
     username: '',
     email: '',
   });
-  const [avatar, setAvatar] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'success' | 'error'>('success');
@@ -28,7 +26,6 @@ export function ProfileSettings() {
         username: user.username || '',
         email: user.email || '',
       });
-      setPreviewUrl(user.avatar || '');
     }
   }, [user]);
 
@@ -37,29 +34,7 @@ export function ProfileSettings() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        setMessage('Please select a valid image file');
-        setMessageType('error');
-        return;
-      }
 
-      // Validate file size (5MB max)
-      if (file.size > 5 * 1024 * 1024) {
-        setMessage('Image size should be less than 5MB');
-        setMessageType('error');
-        return;
-      }
-
-      setAvatar(file);
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-      setMessage('');
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,24 +42,17 @@ export function ProfileSettings() {
     setMessage('');
 
     try {
-      const updateData: any = {
+      const updateData = {
         firstName: formData.firstName,
         lastName: formData.lastName,
         bio: formData.bio,
         username: formData.username,
       };
 
-      if (avatar) {
-        updateData.avatar = avatar;
-      }
-
       const response = await userService.updateProfile(updateData);
       updateUser(response.data.user);
       setMessage('Profile updated successfully!');
       setMessageType('success');
-      
-      // Clear avatar file after successful upload
-      setAvatar(null);
     } catch (error: any) {
       setMessage(error.response?.data?.message || 'Failed to update profile');
       setMessageType('error');
@@ -108,45 +76,6 @@ export function ProfileSettings() {
 
           <div className="flex-1 p-3">
             <form onSubmit={handleSubmit} className="space-y-3 h-full flex flex-col">
-              {/* Avatar Upload */}
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="w-16 h-16 rounded-full bg-gray-200 overflow-hidden border-2 border-white shadow-md">
-                    {previewUrl ? (
-                      <img
-                        src={previewUrl}
-                        alt="Profile"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-400">
-                        <User className="w-5 h-5" />
-                      </div>
-                    )}
-                  </div>
-                  <label className="absolute -bottom-0.5 -right-0.5 bg-blue-500 text-white p-1 rounded-full cursor-pointer hover:bg-blue-600 transition-colors shadow-md">
-                    <Camera className="w-2.5 h-2.5" />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleAvatarChange}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
-                <div>
-                  <h3 className="font-medium text-gray-900 text-sm">Profile Photo</h3>
-                  <p className="text-xs text-gray-500">
-                    Upload a photo. Max size: 5MB
-                  </p>
-                  {avatar && (
-                    <p className="text-xs text-green-600">
-                      New: {avatar.name}
-                    </p>
-                  )}
-                </div>
-              </div>
-
               {/* Form Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>

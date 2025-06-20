@@ -9,6 +9,7 @@ import authRoutes from './routes/auth'
 import postRoutes from './routes/posts'
 import tagRoutes from './routes/tags'
 import commentRoutes from './routes/comments'
+import aiRoutes from './routes/ai'
 
 // Import middleware
 // import { apiLimiter } from './middleware/rateLimiter'
@@ -57,6 +58,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/posts', postRoutes)
 app.use('/api/tags', tagRoutes)
 app.use('/api/comments', commentRoutes)
+app.use('/api/ai', aiRoutes)
 
 // 404 handler
 app.use((req, res) => {

@@ -20,6 +20,7 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorMessage } from '../components/common/ErrorMessage';
 import { CommentSection } from '../components/CommentSection';
 import { EditPostModal } from '../components/EditPostModal';
+import AISummary from '../components/AISummary';
 import type { Post } from '../types';
 
 export function PostDetail() {
@@ -215,6 +216,11 @@ export function PostDetail() {
                   <div className="text-gray-800 leading-relaxed whitespace-pre-wrap">
                     {post.content}
                   </div>
+                </div>
+
+                {/* AI Summary Section */}
+                <div className="mt-6">
+                  <AISummary postId={post.id} postTitle={post.title} />
                 </div>
 
                 {/* Article Footer */}
