@@ -1,0 +1,178 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ================================
+// ENUMS
+// ================================
+enum UserRole {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+// ================================
+// USER MODEL
+// ================================
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  firstName String?
+  lastName  String?
+  bio       String?
+  avatar    String?
+  
+  // Authentication & Security
+  emailVerified    Boolean   @default(false)
+  emailVerifyToken String?
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  lastLoginAt      DateTime?
+  
+  // Preferences
+  isActive    Boolean @default(true)
+  role        UserRole @default(USER)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relationships
+  posts    Post[]
+  comments Comment[]
+  
+  @@map("users")
+}
+
+// ================================
+// POST MODEL
+// ================================
+model Post {
+  id          String     @id @default(cuid())
+  title       String
+  slug        String?    @unique
+  content     String
+  excerpt     String?
+  coverImage  String?
+  status      PostStatus @default(DRAFT)
+  
+  // SEO & Metadata
+  metaTitle       String?
+  metaDescription String?
+  
+  // Engagement
+  viewCount    Int @default(0)
+  likeCount    Int @default(0)
+  commentCount Int @default(0)
+  
+  // Publishing
+  publishedAt DateTime?
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relationships
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  comments Comment[]
+  postTags PostTag[]
+  
+  @@map("posts")
+  @@index([authorId])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([slug])
+}
+
+// ================================
+// COMMENT MODEL
+// ================================
+model Comment {
+  id      String @id @default(cuid())
+  content String
+  
+  // Moderation
+  isApproved Boolean @default(false)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relationships
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  // Self-referential for replies
+  parentId String?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentReplies")
+  
+  @@map("comments")
+  @@index([postId])
+  @@index([authorId])
+  @@index([parentId])
+}
+
+// ================================
+// TAG MODEL
+// ================================
+model Tag {
+  id          String @id @default(cuid())
+  name        String @unique
+  slug        String @unique
+  description String?
+  color       String? // Hex color for UI
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relationships
+  postTags PostTag[]
+  
+  @@map("tags")
+  @@index([slug])
+}
+
+// ================================
+// POST-TAG JUNCTION TABLE (Many-to-Many)
+// ================================
+model PostTag {
+  id String @id @default(cuid())
+  
+  // Relationships
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  tagId String
+  tag   Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  
+  @@map("post_tags")
+  @@unique([postId, tagId])
+  @@index([postId])
+  @@index([tagId])
+} 
