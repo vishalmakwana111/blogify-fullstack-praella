@@ -46,20 +46,26 @@ export const postService = {
   },
 
   // Create new post
-  async createPost(postData: FormData): Promise<PostResponse> {
+  async createPost(postData: FormData | any): Promise<PostResponse> {
+    const isFormData = postData instanceof FormData;
     const response = await api.post('/posts', postData, {
-      headers: {
+      headers: isFormData ? {
         'Content-Type': 'multipart/form-data',
+      } : {
+        'Content-Type': 'application/json',
       },
     });
     return response.data;
   },
 
   // Update post
-  async updatePost(id: string, postData: FormData): Promise<PostResponse> {
+  async updatePost(id: string, postData: FormData | any): Promise<PostResponse> {
+    const isFormData = postData instanceof FormData;
     const response = await api.put(`/posts/${id}`, postData, {
-      headers: {
+      headers: isFormData ? {
         'Content-Type': 'multipart/form-data',
+      } : {
+        'Content-Type': 'application/json',
       },
     });
     return response.data;

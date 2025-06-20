@@ -2,10 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { LogIn, UserPlus, User, LogOut, Menu, X, PlusCircle, LayoutDashboard } from 'lucide-react';
+import { CreatePostModal } from '../CreatePostModal';
 
 export function Header() {
   const { user, isAuthenticated, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = () => {
@@ -56,13 +58,13 @@ export function Header() {
             {isAuthenticated ? (
               <>
                 {/* Create Post Button */}
-                <Link
-                  to="/posts/create"
+                <button
+                  onClick={() => setIsCreatePostModalOpen(true)}
                   className="hidden md:inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   <PlusCircle className="w-4 h-4 mr-2" />
                   Create Post
-                </Link>
+                </button>
 
                 {/* User Profile Menu */}
                 <div className="relative" ref={dropdownRef}>
@@ -193,14 +195,16 @@ export function Header() {
               {isAuthenticated ? (
                 <>
                   {/* Mobile Create Post Button */}
-                  <Link
-                    to="/posts/create"
-                    className="flex items-center text-gray-700 hover:text-blue-600 hover:bg-white px-3 py-2 rounded-lg text-base font-medium transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
+                  <button
+                    onClick={() => {
+                      setIsCreatePostModalOpen(true);
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center w-full text-left text-gray-700 hover:text-blue-600 hover:bg-white px-3 py-2 rounded-lg text-base font-medium transition-colors"
                   >
                     <PlusCircle className="w-5 h-5 mr-3" />
                     Create Post
-                  </Link>
+                  </button>
 
                   <div className="px-3 py-3 bg-white rounded-lg mx-1 my-2">
                     <div className="flex items-center space-x-3">
@@ -285,6 +289,16 @@ export function Header() {
           onClick={() => setIsMenuOpen(false)}
         />
       )}
+
+      {/* Create Post Modal */}
+      <CreatePostModal
+        isOpen={isCreatePostModalOpen}
+        onClose={() => setIsCreatePostModalOpen(false)}
+        onPostCreated={() => {
+          // Optionally refresh posts or show success message
+          console.log('Post created successfully!');
+        }}
+      />
     </header>
   );
 } 

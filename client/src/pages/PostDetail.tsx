@@ -15,6 +15,7 @@ import { Header } from '../components/common/Header';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorMessage } from '../components/common/ErrorMessage';
 import { CommentSection } from '../components/CommentSection';
+import { EditPostModal } from '../components/EditPostModal';
 import type { Post } from '../types';
 
 export function PostDetail() {
@@ -23,6 +24,7 @@ export function PostDetail() {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isEditPostModalOpen, setIsEditPostModalOpen] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -165,13 +167,13 @@ export function PostDetail() {
               <div className="flex items-center gap-2">
                 {/* Edit button - only show if current user is the author */}
                 {user && post.author.id === user.id && (
-                  <Link
-                    to={`/posts/${post.id}/edit`}
+                  <button
+                    onClick={() => setIsEditPostModalOpen(true)}
                     className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
                   >
                     <Edit className="w-4 h-4" />
                     Edit
-                  </Link>
+                  </button>
                 )}
                 
                 <button
@@ -198,6 +200,17 @@ export function PostDetail() {
           <CommentSection postId={post.id} />
         </div>
       </div>
+
+      {/* Edit Post Modal */}
+      <EditPostModal
+        isOpen={isEditPostModalOpen}
+        onClose={() => setIsEditPostModalOpen(false)}
+        postId={post.id}
+        onPostUpdated={() => {
+          fetchPost(); // Refresh post data
+          setIsEditPostModalOpen(false);
+        }}
+      />
     </div>
   );
 } 

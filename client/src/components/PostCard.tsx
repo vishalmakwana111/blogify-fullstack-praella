@@ -9,9 +9,10 @@ interface PostCardProps {
   post: Post;
   onClick: (postId: string) => void;
   onPostUpdated?: () => void;
+  onEditPost?: (postId: string) => void;
 }
 
-export function PostCard({ post, onClick, onPostUpdated }: PostCardProps) {
+export function PostCard({ post, onClick, onPostUpdated, onEditPost }: PostCardProps) {
   const { user, isAuthenticated } = useAuth();
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -26,7 +27,9 @@ export function PostCard({ post, onClick, onPostUpdated }: PostCardProps) {
 
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
-    window.location.href = `/posts/${post.id}/edit`;
+    if (onEditPost) {
+      onEditPost(post.id);
+    }
   };
 
   const handleDelete = async (e: React.MouseEvent) => {

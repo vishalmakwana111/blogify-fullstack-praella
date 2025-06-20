@@ -1,20 +1,33 @@
 import { create } from 'zustand';
 
+// Post interface definition (matching the API response)
 interface Post {
   id: string;
   title: string;
   content: string;
   excerpt: string;
-  slug: string;
-  tags: string[];
-  status: 'draft' | 'published';
-  publishedAt?: string;
+  coverImage?: string;
+  status: string;
+  publishedAt: string;
+  viewCount: number;
+  likeCount: number;
+  commentCount: number;
+  createdAt: string;
+  updatedAt: string;
   author: {
     id: string;
     username: string;
     firstName?: string;
     lastName?: string;
+    avatar?: string;
   };
+  postTags: Array<{
+    tag: {
+      id: string;
+      name: string;
+      color?: string;
+    };
+  }>;
   _count: {
     comments: number;
   };

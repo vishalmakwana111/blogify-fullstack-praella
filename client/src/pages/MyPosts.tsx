@@ -13,14 +13,18 @@ import {
 } from 'lucide-react';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorMessage } from '../components/common/ErrorMessage';
+import { CreatePostModal } from '../components/CreatePostModal';
+import { EditPostModal } from '../components/EditPostModal';
+import { useGlobalPosts } from '../hooks/useGlobalPosts';
 import type { Post } from '../types';
 
 interface PostRowProps {
   post: Post;
   onPostUpdated: () => void;
+  onEditPost: (postId: string) => void;
 }
 
-function PostRow({ post, onPostUpdated }: PostRowProps) {
+function PostRow({ post, onPostUpdated, onEditPost }: PostRowProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -80,13 +84,13 @@ function PostRow({ post, onPostUpdated }: PostRowProps) {
         </div>
         
         <div className="flex items-center gap-1 ml-4">
-          <Link
-            to={`/posts/${post.id}/edit`}
+          <button
+            onClick={() => onEditPost(post.id)}
             className="p-1.5 text-gray-400 hover:text-blue-600 transition-all duration-200 ease-in-out rounded-md hover:bg-blue-50 transform hover:scale-110"
             title="Edit post"
           >
             <Edit className="w-4 h-4" />
-          </Link>
+          </button>
           
           <button
             onClick={handleDelete}
@@ -111,9 +115,28 @@ export function MyPosts() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
+  const [isEditPostModalOpen, setIsEditPostModalOpen] = useState(false);
+  const [editingPostId, setEditingPostId] = useState<string | null>(null);
+
+  const { refreshMyPosts } = useGlobalPosts();
 
   useEffect(() => {
     fetchPosts();
+  }, []);
+
+  // Listen for new posts created globally
+  useEffect(() => {
+    const handlePostCreated = (event: CustomEvent) => {
+      const newPost = event.detail;
+      // Add to the beginning of the posts list
+      setPosts(prevPosts => [newPost, ...prevPosts]);
+    };
+
+    window.addEventListener('postCreated', handlePostCreated as EventListener);
+    return () => {
+      window.removeEventListener('postCreated', handlePostCreated as EventListener);
+    };
   }, []);
 
   const fetchPosts = async () => {
@@ -149,13 +172,13 @@ export function MyPosts() {
           </p>
         </div>
         
-        <Link
-          to="/posts/create"
+        <button
+          onClick={() => setIsCreatePostModalOpen(true)}
           className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 ease-in-out hover:shadow-md transform hover:-translate-y-0.5"
         >
           <Plus className="w-4 h-4" />
           New Post
-        </Link>
+        </button>
       </div>
 
       {/* Posts List - Fixed Height Container */}
@@ -166,13 +189,13 @@ export function MyPosts() {
               <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No posts yet</h3>
               <p className="text-gray-600 mb-6">Create your first post to get started!</p>
-              <Link
-                to="/posts/create"
+              <button
+                onClick={() => setIsCreatePostModalOpen(true)}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 Create Post
-              </Link>
+              </button>
             </div>
           </div>
         ) : (
@@ -187,6 +210,10 @@ export function MyPosts() {
                     key={post.id} 
                     post={post} 
                     onPostUpdated={fetchPosts}
+                    onEditPost={(postId) => {
+                      setEditingPostId(postId);
+                      setIsEditPostModalOpen(true);
+                    }}
                   />
                 ))}
               </div>
@@ -194,6 +221,31 @@ export function MyPosts() {
           </div>
         )}
       </div>
+
+      {/* Create Post Modal */}
+      <CreatePostModal
+        isOpen={isCreatePostModalOpen}
+        onClose={() => setIsCreatePostModalOpen(false)}
+        onPostCreated={() => {
+          fetchPosts(); // Refresh posts list
+          setIsCreatePostModalOpen(false);
+        }}
+      />
+
+      {/* Edit Post Modal */}
+      <EditPostModal
+        isOpen={isEditPostModalOpen}
+        onClose={() => {
+          setIsEditPostModalOpen(false);
+          setEditingPostId(null);
+        }}
+        postId={editingPostId || undefined}
+        onPostUpdated={() => {
+          fetchPosts(); // Refresh posts list
+          setIsEditPostModalOpen(false);
+          setEditingPostId(null);
+        }}
+      />
     </div>
   );
 } 

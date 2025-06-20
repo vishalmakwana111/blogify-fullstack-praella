@@ -8,6 +8,8 @@ import { Pagination } from '../components/common/Pagination';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorMessage } from '../components/common/ErrorMessage';
 import { Header } from '../components/common/Header';
+import { EditPostModal } from '../components/EditPostModal';
+import { useGlobalPosts } from '../hooks/useGlobalPosts';
 
 export function Home() {
   const navigate = useNavigate();
@@ -23,10 +25,32 @@ export function Home() {
     hasNextPage: false,
     hasPrevPage: false,
   });
+  const [isEditPostModalOpen, setIsEditPostModalOpen] = useState(false);
+  const [editingPostId, setEditingPostId] = useState<string | null>(null);
+
+  const { posts: globalPosts, refreshPosts } = useGlobalPosts();
 
 
   useEffect(() => {
     fetchPosts();
+  }, [currentPage]);
+
+  // Listen for new posts created globally
+  useEffect(() => {
+    const handlePostCreated = (event: CustomEvent) => {
+      const newPost = event.detail;
+      if (newPost.status === 'PUBLISHED') {
+        // If we're on the first page, add the new post to the beginning
+        if (currentPage === 1) {
+          setPosts(prevPosts => [newPost, ...prevPosts.slice(0, 1)]); // Keep only 2 posts per page
+        }
+      }
+    };
+
+    window.addEventListener('postCreated', handlePostCreated as EventListener);
+    return () => {
+      window.removeEventListener('postCreated', handlePostCreated as EventListener);
+    };
   }, [currentPage]);
 
   const fetchPosts = async () => {
@@ -164,6 +188,10 @@ export function Home() {
                   post={post} 
                   onClick={handlePostClick}
                   onPostUpdated={fetchPosts}
+                  onEditPost={(postId) => {
+                    setEditingPostId(postId);
+                    setIsEditPostModalOpen(true);
+                  }}
                 />
               ))}
             </div>
@@ -209,6 +237,21 @@ export function Home() {
           </div>
         </div>
       </div>
+
+      {/* Edit Post Modal */}
+      <EditPostModal
+        isOpen={isEditPostModalOpen}
+        onClose={() => {
+          setIsEditPostModalOpen(false);
+          setEditingPostId(null);
+        }}
+        postId={editingPostId || undefined}
+        onPostUpdated={() => {
+          fetchPosts(); // Refresh posts list
+          setIsEditPostModalOpen(false);
+          setEditingPostId(null);
+        }}
+      />
     </div>
   );
 } 
