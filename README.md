@@ -6,7 +6,7 @@ A cutting-edge, full-featured blog platform built with React 19, Express 5, and 
 🌐 **Live Demo**: [blogify-fullstack-praella-zzph.vercel.app](https://blogify-fullstack-praella-zzph.vercel.app)  
 📦 **Repository**: [github.com/vishalmakwana111/blogify-fullstack-praella](https://github.com/vishalmakwana111/blogify-fullstack-praella)
 
-*I would highly recommend running this application locally to experience the full functionality.*
+*I would highly recommend running this application locally to experience the full functionality. The deployed backend on Render has limited memory/CPU resources which may affect performance..*
 
 
 
