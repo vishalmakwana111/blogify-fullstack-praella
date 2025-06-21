@@ -19,15 +19,12 @@ A cutting-edge, full-featured blog platform built with React 19, Express 5, and 
 - Login/logout with email or username support
 - JWT-based authentication with refresh tokens
 - Password change with current password verification
-- Forgot password with secure token-based reset
-- Role-based access control (USER, ADMIN, MODERATOR)
 
 ### 📝 **Blog Management**
 - Create, edit, and delete blog posts
 - Rich text content with title, description, and tags
-- Cover image upload support
 - Draft and published post states
-- Tag system for categorization and filtering
+- Tag system for categorization
 - User can only edit/delete their own posts
 - Post deletion protected when comments exist
 
@@ -42,7 +39,6 @@ A cutting-edge, full-featured blog platform built with React 19, Express 5, and 
 - Clean post listing with title, date, author, comment count
 - **2 posts per page** with professional pagination (as required)
 - Detailed post view on separate pages
-- Tag-based filtering and search
 - Responsive design for all devices
 
 ### 🤖 **AI-Powered Features**
@@ -95,9 +91,6 @@ npm run db:generate
 
 # Run database migrations
 npm run db:migrate
-
-# Seed database with sample data
-npm run db:seed
 
 # Start development server
 npm run dev
@@ -257,23 +250,6 @@ The application features **Google Gemini AI** integration for intelligent conten
 - **Rate Limited**: Optimized for cost and performance
 - **Error Handling**: Graceful fallbacks for API issues
 - **User-Friendly**: Seamless integration in the UI
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ---
 
