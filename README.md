@@ -1,6 +1,6 @@
 # 🚀 Blogify - Modern Fullstack Blog Platform
 
-A cutting-edge, full-featured blog platform built with React 19, Express 5, and AI-powered content features. This project was developed as part of the **HulkApps Backend Practical Test** (Option 1: Post Author Comment System).
+A cutting-edge, full-featured blog platform built with React 19, Express 5, and AI-powered content features.
 
 🎥 **Video Demo**: [Watch Full Application Walkthrough](https://www.loom.com/share/4f2cae82e9384b0b8b0c0acc18ef3734)  
 🌐 **Live Demo**: [blogify-fullstack-praella-zzph.vercel.app](https://blogify-fullstack-praella-zzph.vercel.app)  
