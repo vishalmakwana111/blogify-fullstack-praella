@@ -33,7 +33,25 @@ export function Home() {
 
   useEffect(() => {
     fetchPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
+
+  // Robust pagination: auto-redirect if current page is empty but there are posts
+  useEffect(() => {
+    if (!loading && posts.length === 0 && pagination.totalItems > 0) {
+      
+      if (currentPage > pagination.totalPages && pagination.totalPages > 0) {
+        setCurrentPage(pagination.totalPages);
+      } else if (currentPage > 1 && pagination.totalPages > 0) {
+        setCurrentPage(pagination.totalPages); 
+      }
+    }
+    
+    if (!loading && pagination.totalItems === 0 && currentPage !== 1) {
+      setCurrentPage(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [posts, pagination, loading]);
 
   // Listen for new posts created globally
   useEffect(() => {
