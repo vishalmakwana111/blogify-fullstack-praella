@@ -33,6 +33,9 @@ export function PostDetail() {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [isLiking, setIsLiking] = useState(false);
+  const [isSaved, setIsSaved] = useState(false); // NEW
+  const [isSaving, setIsSaving] = useState(false); // NEW
+  const [saveCount, setSaveCount] = useState(0); // NEW
 
   // Zustand store for like state
   const isPostLiked = usePostStore((state) => state.isPostLiked);
@@ -43,8 +46,32 @@ export function PostDetail() {
     if (id) {
       fetchPost();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  useEffect(() => {
+    if (id && user) {
+      fetchSavedState();
+    }
+  }, [id, user]);
+
+  useEffect(() => {
+    if (!user) {
+      setIsSaved(false);
+      // Like state is managed by Zustand, so no need to reset here unless you want to clear all liked post IDs
+    }
+  }, [user]);
+
+  // NEW: Fetch if post is saved by current user
+  const fetchSavedState = async () => {
+    if (!user) return;
+    try {
+      // Try to fetch all saved posts and check if this post is saved
+      const response = await postService.getSavedPosts();
+      setIsSaved(response.data.some((p: any) => p.id === id));
+    } catch {
+      setIsSaved(false);
+    }
+  };
 
   const fetchPost = async () => {
     try {
@@ -54,6 +81,7 @@ export function PostDetail() {
       const response = await postService.getPost(id!);
       setPost(response.data.post);
       setLikeCount(response.data.post.likeCount || 0);
+      setSaveCount(response.data.post.saveCount || 0); // NEW
       // Always sync liked post ID in the store with backend
       if (response.data.post.likedByCurrentUser) {
         addLikedPostId(response.data.post.id);
@@ -100,6 +128,30 @@ export function PostDetail() {
       alert(error.response?.data?.message || 'Failed to update like');
     } finally {
       setIsLiking(false);
+    }
+  };
+
+  // NEW: Handle save/unsave
+  const handleSave = async () => {
+    if (!user) {
+      alert('You must be logged in to save posts.');
+      return;
+    }
+    setIsSaving(true);
+    try {
+      if (!isSaved) {
+        const res = await postService.savePost(post!.id);
+        setIsSaved(true);
+        setSaveCount(res.data.saveCount);
+      } else {
+        const res = await postService.unsavePost(post!.id);
+        setIsSaved(false);
+        setSaveCount(res.data.saveCount);
+      }
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Failed to update save');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -266,27 +318,29 @@ export function PostDetail() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={handleLike}
-                        disabled={isLiking}
+                        disabled={isLiking || !user}
                         className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                          isPostLiked(post.id)
+                          user && isPostLiked(post.id)
                             ? 'bg-red-50 text-red-600 border border-red-200'
                             : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
-                        } ${isLiking ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        } ${isLiking || !user ? 'opacity-50 cursor-not-allowed' : ''}`}
                       >
-                        <Heart className={`w-4 h-4 ${isPostLiked(post.id) ? 'fill-current' : ''}`} />
+                        <Heart className={`w-4 h-4 ${user && isPostLiked(post.id) ? 'fill-current' : ''}`} />
                         <span>{likeCount}</span>
                       </button>
                       
                       <button
-                        onClick={() => setIsBookmarked(!isBookmarked)}
+                        onClick={handleSave}
+                        disabled={isSaving || !user}
                         className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                          isBookmarked 
-                            ? 'bg-blue-50 text-blue-600 border border-blue-200' 
+                          user && isSaved
+                            ? 'bg-blue-50 text-blue-600 border border-blue-200'
                             : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
-                        }`}
+                        } ${isSaving || !user ? 'opacity-50 cursor-not-allowed' : ''}`}
                       >
-                        <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} />
-                        <span>Save</span>
+                        <Bookmark className={`w-4 h-4 ${user && isSaved ? 'fill-current' : ''}`} />
+                        <span>{user && isSaved ? 'Saved' : 'Save'}</span>
+                        <span>{saveCount}</span>
                       </button>
                     </div>
 

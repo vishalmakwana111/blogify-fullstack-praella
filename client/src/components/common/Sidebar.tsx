@@ -41,6 +41,11 @@ const navigationItems = [
     icon: FileText
   },
   {
+    name: 'Saved Posts',
+    path: '/dashboard/saved',
+    icon: FileText
+  },
+  {
     name: 'Profile',
     path: '/dashboard/profile',
     icon: User

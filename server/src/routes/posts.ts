@@ -90,6 +90,13 @@ router.delete('/:id/like',
   postController.unlikePost
 );
 
+// Save a post
+router.post('/:id/save', authenticate, postController.savePost);
+// Unsave a post
+router.delete('/:id/save', authenticate, postController.unsavePost);
+// Get all saved posts for the current user
+router.get('/saved', authenticate, postController.getSavedPosts);
+
 // Public route with dynamic parameter - must be last
 router.get('/:id', optionalAuthenticate, postController.getPostById);
 

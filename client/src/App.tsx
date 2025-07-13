@@ -17,6 +17,7 @@ import { MyPosts } from './pages/MyPosts';
 import { MyComments } from './pages/MyComments';
 import { PostDetail } from './pages/PostDetail';
 import { LikedPosts } from './pages/LikedPosts';
+import { SavedPosts } from './pages/SavedPosts';
 
 function App() {
   return (
@@ -84,6 +85,7 @@ function App() {
             <Route path="posts" element={<MyPosts />} />
             <Route path="comments" element={<MyComments />} />
             <Route path="liked" element={<LikedPosts />} />
+            <Route path="saved" element={<SavedPosts />} />
             <Route path="profile" element={<ProfileSettings />} />
           </Route>
         </Routes>

@@ -698,6 +698,105 @@ export async function getLikedPosts(req: AuthRequest, res: Response): Promise<vo
   }
 }
 
+// Save a post
+export async function savePost(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    const userId = req.user!.userId;
+    const postId = req.params.id;
+
+    // Check if post exists
+    const post = await prisma.post.findUnique({ where: { id: postId } });
+    if (!post) {
+      res.status(404).json({ success: false, message: 'Post not found' });
+      return;
+    }
+
+    // Check if already saved
+    const existingSave = await prisma.postSave.findUnique({
+      where: { userId_postId: { userId, postId } },
+    });
+    if (existingSave) {
+      res.status(400).json({ success: false, message: 'Post already saved' });
+      return;
+    }
+
+    // Create save
+    await prisma.postSave.create({ data: { userId, postId } });
+    // Increment saveCount
+    const updatedPost = await prisma.post.update({
+      where: { id: postId },
+      data: { saveCount: { increment: 1 } },
+    });
+    res.json({ success: true, message: 'Post saved', data: { saveCount: updatedPost.saveCount } });
+  } catch (error) {
+    console.error('Save post error:', error);
+    res.status(500).json({ success: false, message: 'Failed to save post' });
+  }
+}
+
+// Unsave a post
+export async function unsavePost(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    const userId = req.user!.userId;
+    const postId = req.params.id;
+
+    // Check if save exists
+    const existingSave = await prisma.postSave.findUnique({
+      where: { userId_postId: { userId, postId } },
+    });
+    if (!existingSave) {
+      res.status(400).json({ success: false, message: 'Post not saved yet' });
+      return;
+    }
+
+    // Delete save
+    await prisma.postSave.delete({
+      where: { userId_postId: { userId, postId } },
+    });
+    // Decrement saveCount
+    const updatedPost = await prisma.post.update({
+      where: { id: postId },
+      data: { saveCount: { decrement: 1 } },
+    });
+    res.json({ success: true, message: 'Post unsaved', data: { saveCount: updatedPost.saveCount } });
+  } catch (error) {
+    console.error('Unsave post error:', error);
+    res.status(500).json({ success: false, message: 'Failed to unsave post' });
+  }
+}
+
+// Get all saved posts for the current user
+export async function getSavedPosts(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    const userId = req.user!.userId;
+    const savedPosts = await prisma.postSave.findMany({
+      where: { userId },
+      include: {
+        post: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                username: true,
+                firstName: true,
+                lastName: true,
+                avatar: true,
+              },
+            },
+            postTags: { include: { tag: true } },
+            _count: { select: { comments: true } },
+          },
+        },
+      },
+    });
+    const posts = savedPosts.map(save => save.post);
+    res.json({ success: true, data: posts });
+  } catch (error) {
+    console.error('Get saved posts error:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch saved posts' });
+  }
+}
+
 // Helper function to handle post tags
 async function handlePostTags(postId: string, tagIds: string[]) {
   // Remove existing tags

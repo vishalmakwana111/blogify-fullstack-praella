@@ -130,4 +130,22 @@ export const postService = {
     const response = await api.get('/posts/liked');
     return response.data;
   },
+
+  // Save a post
+  async savePost(id: string): Promise<{ success: boolean; message: string }> {
+    const response = await api.post(`/posts/${id}/save`);
+    return response.data;
+  },
+
+  // Unsave a post
+  async unsavePost(id: string): Promise<{ success: boolean; message: string }> {
+    const response = await api.delete(`/posts/${id}/save`);
+    return response.data;
+  },
+
+  // Get all posts saved by the current user
+  async getSavedPosts(): Promise<PostsResponse> {
+    const response = await api.get('/posts/saved');
+    return response.data;
+  },
 }; 

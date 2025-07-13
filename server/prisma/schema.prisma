@@ -57,6 +57,7 @@ model User {
   posts    Post[]
   comments Comment[]
   postLikes PostLike[]
+  postSaves PostSave[]
   
   @@map("users")
 }
@@ -80,6 +81,7 @@ model Post {
   // Engagement
   viewCount    Int @default(0)
   likeCount    Int @default(0)
+  saveCount    Int @default(0) // NEW
   commentCount Int @default(0)
   
   // Publishing
@@ -96,6 +98,7 @@ model Post {
   comments Comment[]
   postTags PostTag[]
   postLikes PostLike[]
+  postSaves PostSave[]
   
   @@map("posts")
   @@index([authorId])
@@ -194,6 +197,24 @@ model PostLike {
 
   @@unique([userId, postId])
   @@map("post_likes")
+  @@index([userId])
+  @@index([postId])
+} 
+
+// ================================
+// POST-SAVE MODEL (Many-to-Many for Saved Posts)
+model PostSave {
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@map("post_saves")
   @@index([userId])
   @@index([postId])
 } 
