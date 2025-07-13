@@ -1,7 +1,7 @@
 import express from 'express';
 import { body, param } from 'express-validator';
 import { validate } from '../middleware/validation';
-import { authenticate } from '../middleware/auth';
+import { authenticate, optionalAuthenticate } from '../middleware/auth';
 import { uploadPostImage } from '../middleware/upload';
 import * as postController from '../controllers/postController';
 
@@ -15,11 +15,12 @@ const isCUID = (value: string): boolean => {
 };
 
 // Public routes
-router.get('/', postController.getPosts);
+router.get('/', optionalAuthenticate, postController.getPosts);
 
 // Protected routes - more specific routes first
 router.get('/my/posts', authenticate, postController.getUserPosts);
 router.get('/my/stats', authenticate, postController.getUserStats);
+router.get('/liked', authenticate, postController.getLikedPosts);
 
 router.post('/', 
   authenticate, 
@@ -63,7 +64,33 @@ router.delete('/:id',
   postController.deletePost
 );
 
+// Like a post
+router.post('/:id/like', 
+  authenticate,
+  param('id').custom((value) => {
+    if (!isCUID(value)) {
+      throw new Error('Invalid post ID');
+    }
+    return true;
+  }),
+  validate,
+  postController.likePost
+);
+
+// Unlike a post
+router.delete('/:id/like', 
+  authenticate,
+  param('id').custom((value) => {
+    if (!isCUID(value)) {
+      throw new Error('Invalid post ID');
+    }
+    return true;
+  }),
+  validate,
+  postController.unlikePost
+);
+
 // Public route with dynamic parameter - must be last
-router.get('/:id', postController.getPostById);
+router.get('/:id', optionalAuthenticate, postController.getPostById);
 
 export default router; 

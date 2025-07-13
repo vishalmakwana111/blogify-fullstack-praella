@@ -16,6 +16,7 @@ import { ProfileSettings } from './pages/ProfileSettings';
 import { MyPosts } from './pages/MyPosts';
 import { MyComments } from './pages/MyComments';
 import { PostDetail } from './pages/PostDetail';
+import { LikedPosts } from './pages/LikedPosts';
 
 function App() {
   return (
@@ -82,6 +83,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="posts" element={<MyPosts />} />
             <Route path="comments" element={<MyComments />} />
+            <Route path="liked" element={<LikedPosts />} />
             <Route path="profile" element={<ProfileSettings />} />
           </Route>
         </Routes>

@@ -17,6 +17,7 @@ import { CreatePostModal } from '../components/CreatePostModal';
 import { EditPostModal } from '../components/EditPostModal';
 // import { useGlobalPosts } from '../hooks/useGlobalPosts';
 import type { Post } from '../types';
+import { usePostStore } from '../stores/postStore';
 
 interface PostRowProps {
   post: Post;
@@ -119,6 +120,8 @@ export function MyPosts() {
   const [isEditPostModalOpen, setIsEditPostModalOpen] = useState(false);
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
 
+  const setLikedPostIds = usePostStore((state) => state.setLikedPostIds);
+
   // Global posts hook available if needed
   // const { refreshMyPosts } = useGlobalPosts();
 
@@ -147,6 +150,11 @@ export function MyPosts() {
       
       const response = await postService.getMyPosts();
       setPosts(response.data.data);
+      // Always update liked post IDs in the store from backend
+      const likedIds = response.data.data
+        .filter((p: any) => p.likedByCurrentUser)
+        .map((p: any) => p.id);
+      setLikedPostIds(likedIds);
     } catch (error: any) {
       setError(error.response?.data?.message || 'Failed to fetch posts');
     } finally {

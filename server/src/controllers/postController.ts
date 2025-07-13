@@ -166,9 +166,32 @@ export async function getPosts(req: AuthRequest, res: Response): Promise<void> {
       },
     });
 
+    
+
+    // Add likedByCurrentUser to each post if authenticated
+    let likedPostIds: Set<string> = new Set();
+    if (req.user) {
+      // Debug log for userId and liked postIds
+      console.log('Checking likes for user:', req.user.userId);
+      const userLikes = await prisma.postLike.findMany({
+        where: { userId: req.user.userId },
+        select: { postId: true },
+      });
+      console.log('User likes:', userLikes.map(like => like.postId));
+      likedPostIds = new Set(userLikes.map(like => like.postId));
+    }
+    const postsWithLike = result.data.map((post: any) => ({
+      ...post,
+      likedByCurrentUser: req.user ? likedPostIds.has(post.id) : false,
+    }));
+    const response = {
+      ...result,
+      data: postsWithLike,
+    };
+
     res.json({
       success: true,
-      data: result,
+      data: response,
     });
   } catch (error) {
     console.error('Get posts error:', error);
@@ -180,6 +203,8 @@ export async function getPosts(req: AuthRequest, res: Response): Promise<void> {
 }
 
 export async function getPostById(req: AuthRequest, res: Response): Promise<void> {
+  console.log('--- getPostById called ---');
+  console.log('Authorization header:', req.headers['authorization']);
   try {
     const { id } = req.params;
 
@@ -237,9 +262,32 @@ export async function getPostById(req: AuthRequest, res: Response): Promise<void
       });
     }
 
+    console.log('--- getPostById called  here ---');
+
+    // Add likedByCurrentUser
+    let likedByCurrentUser = false;
+    console.log('\n==============================');
+    console.log(req.user)
+    console.log('\n==============================');
+    if (req.user) {
+
+      console.log('--- getPostById called like ---');
+      // Beautified debug log for like check
+      console.log('\n==============================');
+      console.log('🔎 [LIKE CHECK]');
+      console.log('  User ID:', req.user.userId);
+      console.log('  Post ID:', id);
+      const like = await prisma.postLike.findFirst({
+        where: { userId: req.user.userId, postId: id },
+      });
+      console.log('  Like query result:', like);
+      console.log('==============================\n');
+      likedByCurrentUser = !!like;
+    }
+
     res.json({
       success: true,
-      data: { post },
+      data: { post: { ...post, likedByCurrentUser } },
     });
   } catch (error) {
     console.error('Get post error:', error);
@@ -425,9 +473,27 @@ export async function getUserPosts(req: AuthRequest, res: Response): Promise<voi
       },
     });
 
+    // Add likedByCurrentUser to each post (for user's own posts, this is true if they liked their own post)
+    let likedPostIds: Set<string> = new Set();
+    if (req.user) {
+      const userLikes = await prisma.postLike.findMany({
+        where: { userId: req.user.userId },
+        select: { postId: true },
+      });
+      likedPostIds = new Set(userLikes.map(like => like.postId));
+    }
+    const postsWithLike = result.data.map((post: any) => ({
+      ...post,
+      likedByCurrentUser: req.user ? likedPostIds.has(post.id) : false,
+    }));
+    const response = {
+      ...result,
+      data: postsWithLike,
+    };
+
     res.json({
       success: true,
-      data: result,
+      data: response,
     });
   } catch (error) {
     console.error('Get user posts error:', error);
@@ -500,6 +566,134 @@ export async function getUserStats(req: AuthRequest, res: Response): Promise<voi
     res.status(500).json({
       success: false,
       message: 'Failed to fetch user statistics',
+    });
+  }
+}
+
+// Like a post
+export async function likePost(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    const userId = req.user!.userId;
+    const postId = req.params.id;
+
+    // Check if post exists
+    const post = await prisma.post.findUnique({ where: { id: postId } });
+    if (!post) {
+      res.status(404).json({ success: false, message: 'Post not found' });
+      return;
+    }
+
+    // Check if already liked
+    const existingLike = await prisma.postLike.findUnique({
+      where: { userId_postId: { userId, postId } },
+    });
+    if (existingLike) {
+      res.status(400).json({ success: false, message: 'Post already liked' });
+      return;
+    }
+
+    // Create like
+    await prisma.postLike.create({ data: { userId, postId } });
+    await prisma.post.update({
+      where: { id: postId },
+      data: { likeCount: { increment: 1 } },
+    });
+
+    const updatedPost = await prisma.post.findUnique({ where: { id: postId } });
+    res.json({
+      success: true,
+      message: 'Post liked',
+      data: { likeCount: updatedPost?.likeCount ?? 0 },
+    });
+  } catch (error) {
+    console.error('Like post error:', error);
+    res.status(500).json({ success: false, message: 'Failed to like post' });
+  }
+}
+
+// Unlike a post
+export async function unlikePost(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    const userId = req.user!.userId;
+    const postId = req.params.id;
+
+    // Check if post exists
+    const post = await prisma.post.findUnique({ where: { id: postId } });
+    if (!post) {
+      res.status(404).json({ success: false, message: 'Post not found' });
+      return;
+    }
+
+    // Check if like exists
+    const existingLike = await prisma.postLike.findUnique({
+      where: { userId_postId: { userId, postId } },
+    });
+    if (!existingLike) {
+      res.status(400).json({ success: false, message: 'Post not liked yet' });
+      return;
+    }
+
+    // Delete like
+    await prisma.postLike.delete({
+      where: { userId_postId: { userId, postId } },
+    });
+    await prisma.post.update({
+      where: { id: postId },
+      data: { likeCount: { decrement: 1 } },
+    });
+
+    const updatedPost = await prisma.post.findUnique({ where: { id: postId } });
+    res.json({
+      success: true,
+      message: 'Post unliked',
+      data: { likeCount: updatedPost?.likeCount ?? 0 },
+    });
+  } catch (error) {
+    console.error('Unlike post error:', error);
+    res.status(500).json({ success: false, message: 'Failed to unlike post' });
+  }
+}
+
+// Get all posts liked by the current user
+export async function getLikedPosts(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    const userId = req.user!.userId;
+    // Find all post likes for this user
+    const likedPosts = await prisma.postLike.findMany({
+      where: { userId },
+      include: {
+        post: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                username: true,
+                firstName: true,
+                lastName: true,
+                avatar: true,
+              },
+            },
+            postTags: {
+              include: { tag: true },
+            },
+            _count: {
+              select: { comments: true },
+            },
+          },
+        },
+      },
+    });
+    // Map to just the post objects
+    const posts = likedPosts.map(like => like.post);
+    res.json({
+      success: true,
+      data: posts,
+    });
+  } catch (error) {
+    console.error('Get liked posts error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch liked posts',
     });
   }
 }

@@ -44,7 +44,14 @@ interface PostState {
     total: number;
     totalPages: number;
   };
-  
+
+  // Like state
+  likedPostIds: Set<string>;
+  setLikedPostIds: (ids: string[]) => void;
+  addLikedPostId: (id: string) => void;
+  removeLikedPostId: (id: string) => void;
+  isPostLiked: (id: string) => boolean;
+
   // Actions
   setPosts: (posts: Post[]) => void;
   setCurrentPost: (post: Post | null) => void;
@@ -57,7 +64,7 @@ interface PostState {
   clearPosts: () => void;
 }
 
-export const usePostStore = create<PostState>((set) => ({
+export const usePostStore = create<PostState>((set, get) => ({
   posts: [],
   currentPost: null,
   loading: false,
@@ -68,6 +75,19 @@ export const usePostStore = create<PostState>((set) => ({
     total: 0,
     totalPages: 0,
   },
+  likedPostIds: new Set(),
+  setLikedPostIds: (ids) => set({ likedPostIds: new Set(ids) }),
+  addLikedPostId: (id) => set((state) => {
+    const newSet = new Set(state.likedPostIds);
+    newSet.add(id);
+    return { likedPostIds: newSet };
+  }),
+  removeLikedPostId: (id) => set((state) => {
+    const newSet = new Set(state.likedPostIds);
+    newSet.delete(id);
+    return { likedPostIds: newSet };
+  }),
+  isPostLiked: (id) => get().likedPostIds.has(id),
 
   setPosts: (posts) => set({ posts }),
   setCurrentPost: (currentPost) => set({ currentPost }),

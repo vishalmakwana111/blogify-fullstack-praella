@@ -112,4 +112,22 @@ export const postService = {
     const response = await api.post('/tags', tagData);
     return response.data;
   },
+
+  // Like a post
+  async likePost(id: string): Promise<{ success: boolean; message: string; data: { likeCount: number } }> {
+    const response = await api.post(`/posts/${id}/like`);
+    return response.data;
+  },
+
+  // Unlike a post
+  async unlikePost(id: string): Promise<{ success: boolean; message: string; data: { likeCount: number } }> {
+    const response = await api.delete(`/posts/${id}/like`);
+    return response.data;
+  },
+
+  // Get all posts liked by the current user
+  async getLikedPosts(): Promise<PostsResponse> {
+    const response = await api.get('/posts/liked');
+    return response.data;
+  },
 }; 

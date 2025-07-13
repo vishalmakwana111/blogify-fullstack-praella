@@ -9,6 +9,7 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorMessage } from '../components/common/ErrorMessage';
 import { Header } from '../components/common/Header';
 import { EditPostModal } from '../components/EditPostModal';
+import { usePostStore } from '../stores/postStore';
 // import { useGlobalPosts } from '../hooks/useGlobalPosts';
 
 export function Home() {
@@ -28,6 +29,7 @@ export function Home() {
   const [isEditPostModalOpen, setIsEditPostModalOpen] = useState(false);
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
 
+  const setLikedPostIds = usePostStore((state) => state.setLikedPostIds);
   // const { refreshPosts } = useGlobalPosts();
 
 
@@ -84,6 +86,11 @@ export function Home() {
       
       setPosts(response.data.data);
       setPagination(response.data.pagination);
+      // Always update liked post IDs in the store from backend
+      const likedIds = response.data.data
+        .filter((p: any) => p.likedByCurrentUser)
+        .map((p: any) => p.id);
+      setLikedPostIds(likedIds);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to load posts');
     } finally {

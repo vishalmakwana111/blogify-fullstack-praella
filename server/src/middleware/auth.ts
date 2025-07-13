@@ -152,3 +152,24 @@ export async function optionalAuth(
     next()
   }
 } 
+
+// Optional authentication middleware for public routes
+export function optionalAuthenticate(req: AuthRequest, res: Response, next: NextFunction) {
+  const authHeader = req.headers['authorization'];
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7);
+    try {
+      const payload = verifyToken(token);
+      req.user = {
+        userId: payload.userId,
+        email: payload.email,
+        role: payload.role,
+        id: payload.userId,
+        username: '', // Satisfy type checker
+      };
+    } catch (err) {
+      req.user = undefined;
+    }
+  }
+  next();
+} 

@@ -36,6 +36,11 @@ const navigationItems = [
     icon: MessageCircle
   },
   {
+    name: 'Liked Posts',
+    path: '/dashboard/liked',
+    icon: FileText
+  },
+  {
     name: 'Profile',
     path: '/dashboard/profile',
     icon: User

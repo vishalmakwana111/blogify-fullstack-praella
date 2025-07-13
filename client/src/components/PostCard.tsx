@@ -1,9 +1,10 @@
 import { formatDistanceToNow } from 'date-fns';
-import { Calendar, User, MessageCircle, ChevronRight, Edit, Trash2 } from 'lucide-react';
+import { Calendar, User, MessageCircle, ChevronRight, Edit, Trash2, Heart } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { postService } from '../services/postService';
 import { useState } from 'react';
 import type { Post } from '../types';
+import { usePostStore } from '../stores/postStore';
 
 interface PostCardProps {
   post: Post;
@@ -15,6 +16,14 @@ interface PostCardProps {
 export function PostCard({ post, onClick, onPostUpdated, onEditPost }: PostCardProps) {
   const { user, isAuthenticated } = useAuth();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [likeCount, setLikeCount] = useState(post.likeCount || 0);
+  const [isLiking, setIsLiking] = useState(false);
+
+  // Zustand store for like state
+  const isPostLiked = usePostStore((state) => state.isPostLiked);
+  const addLikedPostId = usePostStore((state) => state.addLikedPostId);
+  const removeLikedPostId = usePostStore((state) => state.removeLikedPostId);
+  const liked = isPostLiked(post.id);
 
   const authorName = post.author.firstName && post.author.lastName
     ? `${post.author.firstName} ${post.author.lastName}`
@@ -60,6 +69,31 @@ export function PostCard({ post, onClick, onPostUpdated, onEditPost }: PostCardP
       alert(error.response?.data?.message || 'Failed to delete post');
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  // Like button handler
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      alert('You must be logged in to like posts.');
+      return;
+    }
+    setIsLiking(true);
+    try {
+      if (!liked) {
+        const res = await postService.likePost(post.id);
+        setLikeCount(res.data.likeCount);
+        addLikedPostId(post.id);
+      } else {
+        const res = await postService.unlikePost(post.id);
+        setLikeCount(res.data.likeCount);
+        removeLikedPostId(post.id);
+      }
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Failed to update like');
+    } finally {
+      setIsLiking(false);
     }
   };
 
@@ -178,6 +212,16 @@ export function PostCard({ post, onClick, onPostUpdated, onEditPost }: PostCardP
                 </div>
               </div>
             </div>
+            {/* Like Button */}
+            <button
+              onClick={handleLike}
+              disabled={isLiking}
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-200 text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md ${liked ? 'bg-red-100 text-red-600 border-red-200' : 'bg-white text-gray-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200'} ${isLiking ? 'opacity-50 cursor-not-allowed' : ''}`}
+              title={liked ? 'Unlike' : 'Like'}
+            >
+              <Heart className={`w-4 h-4 ${liked ? 'fill-red-500' : 'fill-none'}`} />
+              <span>{likeCount}</span>
+            </button>
           </div>
 
           {/* Read More Button */}

@@ -17,7 +17,7 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorMessage } from '../components/common/ErrorMessage';
 import { CreatePostModal } from '../components/CreatePostModal';
 import { EditPostModal } from '../components/EditPostModal';
-// import { useGlobalPosts } from '../hooks/useGlobalPosts';
+import { usePostStore } from '../stores/postStore';
 import type { Post } from '../types';
 
 interface UserStats {
@@ -149,16 +149,20 @@ export function Dashboard() {
     draftPosts: 0,
   });
   const [recentPosts, setRecentPosts] = useState<Post[]>([]);
+  const [likedPosts, setLikedPosts] = useState<Post[]>([]); // NEW
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
   const [isEditPostModalOpen, setIsEditPostModalOpen] = useState(false);
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
 
+  const setLikedPostIds = usePostStore((state) => state.setLikedPostIds);
+
   // const { refreshMyPosts } = useGlobalPosts();
 
   useEffect(() => {
     fetchDashboardData();
+    fetchLikedPosts(); // NEW
   }, []);
 
   // Listen for new posts created globally
@@ -186,10 +190,25 @@ export function Dashboard() {
       
       setRecentPosts(postsResponse.data.data);
       setStats(statsResponse.data);
+      // Always update liked post IDs in the store from backend
+      const likedIds = postsResponse.data.data
+        .filter((p: any) => p.likedByCurrentUser)
+        .map((p: any) => p.id);
+      setLikedPostIds(likedIds);
     } catch (error: any) {
       setError(error.response?.data?.message || 'Failed to fetch dashboard data');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // NEW: Fetch liked posts
+  const fetchLikedPosts = async () => {
+    try {
+      const response = await postService.getLikedPosts();
+      setLikedPosts(response.data);
+    } catch (error: any) {
+      // Optionally handle error
     }
   };
 
@@ -321,6 +340,27 @@ export function Dashboard() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Liked Posts Section */}
+      <div className="mt-8">
+        <h2 className="text-lg font-semibold mb-2">Liked Posts</h2>
+        {likedPosts.length === 0 ? (
+          <p className="text-gray-500">You haven't liked any posts yet.</p>
+        ) : (
+          <div className="grid gap-3">
+            {likedPosts.map((post) => (
+              <div key={post.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-3">
+                <h3 className="text-base font-medium text-gray-900 mb-1">{post.title}</h3>
+                <div className="flex items-center gap-3 text-xs text-gray-500">
+                  <span>By {post.author?.username || 'Unknown'}</span>
+                  <span>Likes: {post.likeCount}</span>
+                  <span>Comments: {post._count?.comments ?? 0}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Create Post Modal */}

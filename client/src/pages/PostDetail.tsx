@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { postService } from '../services/postService';
 import { useAuth } from '../contexts/AuthContext';
+import { usePostStore } from '../stores/postStore';
 import { 
   Calendar, 
   Eye, 
@@ -30,12 +31,19 @@ export function PostDetail() {
   const [error, setError] = useState<string | null>(null);
   const [isEditPostModalOpen, setIsEditPostModalOpen] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [isLiking, setIsLiking] = useState(false);
+
+  // Zustand store for like state
+  const isPostLiked = usePostStore((state) => state.isPostLiked);
+  const addLikedPostId = usePostStore((state) => state.addLikedPostId);
+  const removeLikedPostId = usePostStore((state) => state.removeLikedPostId);
 
   useEffect(() => {
     if (id) {
       fetchPost();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const fetchPost = async () => {
@@ -45,6 +53,13 @@ export function PostDetail() {
       
       const response = await postService.getPost(id!);
       setPost(response.data.post);
+      setLikeCount(response.data.post.likeCount || 0);
+      // Always sync liked post ID in the store with backend
+      if (response.data.post.likedByCurrentUser) {
+        addLikedPostId(response.data.post.id);
+      } else {
+        removeLikedPostId(response.data.post.id);
+      }
     } catch (error: any) {
       setError(error.response?.data?.message || 'Failed to load post');
     } finally {
@@ -62,6 +77,29 @@ export function PostDetail() {
     } else {
       navigator.clipboard.writeText(window.location.href);
       alert('Link copied to clipboard!');
+    }
+  };
+
+  const handleLike = async () => {
+    if (!user) {
+      alert('You must be logged in to like posts.');
+      return;
+    }
+    setIsLiking(true);
+    try {
+      if (!isPostLiked(post!.id)) {
+        const res = await postService.likePost(post!.id);
+        setLikeCount(res.data.likeCount);
+        addLikedPostId(post!.id);
+      } else {
+        const res = await postService.unlikePost(post!.id);
+        setLikeCount(res.data.likeCount);
+        removeLikedPostId(post!.id);
+      }
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Failed to update like');
+    } finally {
+      setIsLiking(false);
     }
   };
 
@@ -227,15 +265,16 @@ export function PostDetail() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => setIsLiked(!isLiked)}
+                        onClick={handleLike}
+                        disabled={isLiking}
                         className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                          isLiked 
-                            ? 'bg-red-50 text-red-600 border border-red-200' 
+                          isPostLiked(post.id)
+                            ? 'bg-red-50 text-red-600 border border-red-200'
                             : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
-                        }`}
+                        } ${isLiking ? 'opacity-50 cursor-not-allowed' : ''}`}
                       >
-                        <Heart className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
-                        <span>Like</span>
+                        <Heart className={`w-4 h-4 ${isPostLiked(post.id) ? 'fill-current' : ''}`} />
+                        <span>{likeCount}</span>
                       </button>
                       
                       <button
